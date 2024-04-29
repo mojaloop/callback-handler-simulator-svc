@@ -34,11 +34,14 @@ import request from 'supertest'
 import { WSServer } from '../../../src/ws-server'
 
 describe('start', () => {
+  let ws: WSServer
   beforeAll(async () => {
-    await Server.run(new WSServer())
+    ws = new WSServer()
+    await Server.run(ws)
   })
   afterAll(() => {
     Server.terminate()
+    ws.wsServer.close()
   })
   afterEach(() => {
     jest.clearAllMocks()
