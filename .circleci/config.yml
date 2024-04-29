@@ -234,7 +234,9 @@ jobs:
           command: mkdir -p ./test/results
       - run:
           name: Execute unit tests
-          command: npm -s run test:unit
+          command: |
+            npm run build
+            npm -s run test:unit
           environment:
             NODE_ENV: "test"
       - store_artifacts:
@@ -263,7 +265,9 @@ jobs:
           key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Execute code coverage check
-          command: npm -s run test:coverage-check
+          command: |
+            npm run build
+            npm -s run test:coverage-check
       - store_artifacts:
           path: coverage
           destination: test
