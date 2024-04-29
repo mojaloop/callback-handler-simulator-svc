@@ -698,11 +698,15 @@ workflows:
             - setup
           filters:
             tags:
-              only: /.*/
+              # Re-enable for all tags once we have a good coverage
+              # only: /.*/
+              ignore: /.*/
             branches:
               ignore:
-                - /feature*/
-                - /bugfix*/
+              # Re-enable once we have a good coverage
+                # - /feature*/
+                # - /bugfix*/
+                - /.*/
       - build-local:
           context: org-global
           requires:
