@@ -20,9 +20,9 @@ module.exports = {
       lines: 80
     }
   },
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/'
   }),
-  reporters: ['jest-junit', 'default'],
-  modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  reporters: ['jest-junit', 'default']
 }
