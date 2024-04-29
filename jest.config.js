@@ -25,7 +25,4 @@ module.exports = {
   }),
   reporters: ['jest-junit', 'default'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
-  // moduleNameMapper: {
-  //   '^@callback-handler-simulator-svc/utils(.*)$': '<rootDir>/dist/local-packages/utils/$1',
-  // }
 }
