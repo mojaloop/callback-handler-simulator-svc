@@ -29,13 +29,13 @@
  --------------
  ******/
 
-import { performance } from 'perf_hooks'
 import Server from '../../../src/server'
 import request from 'supertest'
+import { WSServer } from '../../../src/ws-server'
 
 describe('start', () => {
-  beforeAll(() => {
-    Server.run()
+  beforeAll(async () => {
+    await Server.run(new WSServer())
   })
   afterAll(() => {
     Server.terminate()

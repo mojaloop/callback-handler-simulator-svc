@@ -23,5 +23,9 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/'
   }),
-  reporters: ['jest-junit', 'default']
+  reporters: ['jest-junit', 'default'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  // moduleNameMapper: {
+  //   '^@callback-handler-simulator-svc/utils(.*)$': '<rootDir>/dist/local-packages/utils/$1',
+  // }
 }
