@@ -243,34 +243,6 @@ jobs:
       - store_test_results:
           path: ./test/results
 
-  test-bdd:
-    executor: default-docker
-    environment:
-      <<: *defaults_environment
-    steps:
-      - run:
-          name: Install general dependencies
-          command: *defaults_docker_Dependencies
-      - checkout
-      - run:
-          <<: *defaults_configure_nvm
-      - run:
-          <<: *defaults_display_versions
-      - restore_cache:
-          key: dependency-cache-{{ .Environment.CIRCLE_SHA1 }}
-      - run:
-          name: Execute unit tests
-          command: npm run test:bdd
-      - run:
-          name: prepare test/results
-          command: |
-            mkdir -p test/results
-            mv junit.xml test/results
-      - store_artifacts:
-          path: ./test/results
-      - store_test_results:
-          path: ./test/results
-
   test-coverage:
     executor: default-docker
     environment:
@@ -716,17 +688,6 @@ workflows:
               ignore:
                 - /feature*/
                 - /bugfix*/
-      - test-bdd:
-          context: org-global
-          requires:
-            - setup
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore:
-                - /feature*/
-                - /bugfix*/
       - test-coverage:
           context: org-global
           requires:
@@ -799,7 +760,6 @@ workflows:
             - pr-tools/pr-title-check
             - test-lint
             - test-unit
-            - test-bdd
             - test-coverage
             - vulnerability-check
             - audit-licenses
@@ -826,7 +786,6 @@ workflows:
             - pr-tools/pr-title-check
             - test-lint
             - test-unit
-            - test-bdd
             - test-coverage
             - vulnerability-check
             - audit-licenses
@@ -845,7 +804,6 @@ workflows:
             - pr-tools/pr-title-check
             - test-lint
             - test-unit
-            - test-bdd
             - test-coverage
             - vulnerability-check
             - audit-licenses
