@@ -84,7 +84,6 @@
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "jest-mock-process": "^2.0.0",
-    "npm-audit-resolver": "^2.3.1",
     "npm-check-updates": "^16.14.20",
     "prettier": "^3.2.5",
     "supertest": "^7.0.0",
