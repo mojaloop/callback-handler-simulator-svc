@@ -54,7 +54,7 @@
     "axios": "1.5.0",
     "convict": "^6.2.4",
     "env-var": "^7.3.1",
-    "express": "^4.17.2",
+    "express": "^4.19.2",
     "http-proxy-middleware": "^2.0.3",
     "parse-strings-in-object": "^1.4.0",
     "prom-client": "^14.2.0",
