@@ -40,8 +40,7 @@ import Metrics from '@mojaloop/central-services-metrics'
 import { logger } from '../shared/logger'
 import { WSServer } from '../ws-server'
 import path from 'path'
-
-const requireGlob = require('require-glob')
+import requireGlob from 'require-glob'
 
 const app = express()
 let appInstance: http.Server
@@ -53,7 +52,7 @@ export type options = {
 app.use(express.json({
   type: [
     'application/json',
-    'application/*+json',
+    'application/*+json'
   ]
 }))
 
