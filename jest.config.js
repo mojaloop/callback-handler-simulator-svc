@@ -20,6 +20,7 @@ module.exports = {
       lines: 80
     }
   },
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/'
   }),

@@ -29,58 +29,57 @@
  ******/
 
 // import * as WebSocket from 'ws';
-import { Server as WebSocketServer, WebSocket } from 'ws';
+import { Server as WebSocketServer, WebSocket } from 'ws'
 import {
   // Agent,
   // ClientRequest,
   // ClientRequestArgs,
-  IncomingMessage,
+  IncomingMessage
   // OutgoingHttpHeaders,
   // Server as HTTPServer,
-} from "http";
-import { logger } from '../shared/logger';
-import Config from '../shared/config';
+} from 'http'
+import { logger } from '../shared/logger'
+import Config from '../shared/config'
 
 export class WSServer {
-  wsServer: WebSocketServer;
-  wsClientMap: {[key: string]: WebSocket};
-  constructor() {
-    this.wsServer = new WebSocketServer({ port: Config.WS_SERVER.PORT });
+  wsServer: WebSocketServer
+  wsClientMap: {[key: string]: WebSocket}
+  constructor () {
+    this.wsServer = new WebSocketServer({ port: Config.WS_SERVER.PORT })
     this.wsClientMap = {}
 
-    this.wsServer.on("listening", () => {
+    this.wsServer.on('listening', () => {
       logger.info(`Websocket server is running on port ${Config.WS_SERVER.PORT}`)
-    });
+    })
 
-    this.wsServer.on("connection", (ws: WebSocket, req: IncomingMessage) => {
-      logger.debug('Connection established for client channel ' + req.url);
-      this.wsClientMap[req.url as string] = ws;
-    
+    this.wsServer.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+      logger.debug('Connection established for client channel ' + req.url)
+      this.wsClientMap[req.url as string] = ws
+
       // Listen to the message coming from client.
-      ws.on("message", (message) => {
-        logger.debug(`Message from client: ${message}`);
-      });
-    
+      ws.on('message', (message) => {
+        logger.debug(`Message from client: ${message}`)
+      })
+
       // Clearing up when client closes web socket connection
-      ws.on("close", () => {
-        logger.debug('Client connection closed');
-        delete this.wsClientMap[req.url as string];
-      });
-    });
+      ws.on('close', () => {
+        logger.debug('Client connection closed')
+        delete this.wsClientMap[req.url as string]
+      })
+    })
   }
 
   // Broadcast to all.
   broadcast (message: string) {
-    logger.debug(`Broadcasting to all clients: ${message}`);
-    this.wsServer.clients.forEach(function each(client) {
-      client.send(message);
-    });
-  };
+    logger.debug(`Broadcasting to all clients: ${message}`)
+    this.wsServer.clients.forEach(function each (client) {
+      client.send(message)
+    })
+  }
 
   notify (channel:string, message: string) {
-    logger.debug(`Notifying channel ${channel}: ${message}`);
+    logger.debug(`Notifying channel ${channel}: ${message}`)
     // TODO: refine the following. Handle errors cases ...etc
-    this.wsClientMap[channel]?.send(message);
-  };
-  
+    this.wsClientMap[channel]?.send(message)
+  }
 }
