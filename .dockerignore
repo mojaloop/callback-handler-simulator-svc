@@ -9,5 +9,3 @@ Dockerfile
 
 node_modules/
 dist/
-config/
-handlers/

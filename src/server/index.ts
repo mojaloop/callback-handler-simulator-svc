@@ -69,7 +69,7 @@ async function run (wsServer: WSServer): Promise<void> {
     }
   }
 
-  logger.info(Config)
+  logger.info(JSON.stringify(Config))
   if (!Config.INSTRUMENTATION.METRICS.DISABLED) {
     Metrics.setup(Config.INSTRUMENTATION.METRICS.config)
   }
