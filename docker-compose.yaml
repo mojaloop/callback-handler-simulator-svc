@@ -7,11 +7,11 @@ networks:
 services:
   callback-handler-simulator-svc:
     container_name: callback-handler-simulator-svc
-    image: mojaloop/callback-handler-simulator-svc:local
+    image: mojaloop/callback-handler-simulator-svc:latest
     build:
       context: .
       cache_from:
-        - mojaloop/callback-handler-simulator-svc:local
+        - mojaloop/callback-handler-simulator-svc:latest
     ports:
       - "3001:3001"
     networks:
