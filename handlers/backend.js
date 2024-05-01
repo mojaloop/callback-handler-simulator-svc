@@ -152,7 +152,7 @@ const init = (config, logger, options = undefined) => {
 
   return {
     name: 'backend',
-    basepath: '/',
+    basepath: '/backend',
     router
   }
 }
