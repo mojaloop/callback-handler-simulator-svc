@@ -129,11 +129,11 @@ const init = (config, logger, options = undefined) => {
       ['success', 'operation']
     ).startTimer()
 
-    const quotesResponse = {
+    const transferResponse = {
       homeTransactionId: 'homeTransactionId',
     }
 
-    res.status(200).json(quotesResponse)
+    res.status(200).json(transferResponse)
 
     histTimerEnd({ success: true, operation: 'transfers_post_transfer' })
   })
