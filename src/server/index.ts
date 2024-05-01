@@ -33,6 +33,7 @@
 /// <reference path="../../ambient.d.ts"/>
 /* eslint-disable camelcase */
 import express from 'express'
+import expressListEndpoints from 'express-list-endpoints'
 import http from 'http'
 import Config from '../shared/config'
 import Logger from '@mojaloop/central-services-logger'
@@ -85,6 +86,12 @@ async function run (wsServer: WSServer): Promise<void> {
     res.send(await Metrics.getMetricsForPrometheus())
   })
   appInstance = app.listen(Config.PORT)
+  Logger.isInfoEnabled &&
+    Logger.info(`
+      \nRegistered Endpoints:
+      \n=====================
+      \n${expressListEndpoints(app).map(e => `${e.methods} ${e.path}`).join('\n')}`
+    )
   Logger.isInfoEnabled && Logger.info(`Service is running on port ${Config.PORT}`)
 }
 
