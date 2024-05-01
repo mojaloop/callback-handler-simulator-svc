@@ -1,5 +1,4 @@
 const express = require('express')
-const env = require('env-var')
 
 const init = (config, logger, options = undefined) => {
   const router = express.Router()

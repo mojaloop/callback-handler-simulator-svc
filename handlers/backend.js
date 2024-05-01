@@ -1,5 +1,4 @@
 const express = require('express')
-const env = require('env-var')
 const { TraceUtils } = require('@callback-handler-simulator-svc/utils')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
@@ -73,7 +72,6 @@ const init = (config, logger, options = undefined) => {
     return res.status(202).end()
   }
 
-
   // Handle Oracle GET Participants request
   router.get('/parties/:type/:id', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
@@ -132,13 +130,10 @@ const init = (config, logger, options = undefined) => {
     ).startTimer()
 
     const quotesResponse = {
-      completedTimestamp: new Date(new Date().getTime() + 10000),
-      fulfilment: 'string',
-      homeTransactionId: req.body.homeR2PTransactionId,
-      transferState: 'RECEIVED'
+      homeTransactionId: 'homeTransactionId',
     }
 
-    res.status(202).json(quotesResponse)
+    res.status(200).json(quotesResponse)
 
     histTimerEnd({ success: true, operation: 'transfers_post_transfer' })
   })
@@ -157,7 +152,7 @@ const init = (config, logger, options = undefined) => {
 
   return {
     name: 'backend',
-    basepath: '/backend',
+    basepath: '/',
     router
   }
 }
