@@ -270,6 +270,63 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('transfers', req, res)
   })
 
+  // Handle Payee POST /fxTransfers
+  router.post('/fxTransfers', (req, res) => {
+    const histTimerEnd = options.metrics.getHistogram(
+      'ing_callbackHandler',
+      'Ingress - Operation handler',
+      ['success', 'operation']
+    ).startTimer()
+
+    // Async callback
+    const fspiopSourceHeader = req.headers['fspiop-source']
+    const traceparentHeader = req.headers['traceparent']
+    const tracestateHeader = req.headers['tracestate'];
+    const commitRequestId = req.body.commitRequestId;
+
+    (async () => {
+      const egressHistTimerEnd = options.metrics.getHistogram(
+        'egress_callbackHandler',
+        'Egress - Operation handler',
+        ['success', 'operation']
+      ).startTimer()
+      try {
+        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, {
+            "conversionState": "COMMITTED",
+            "fulfilment": FULFILMENT,
+            "completedTimestamp": (new Date()).toISOString()
+        },
+        {
+          headers: {
+            'Content-Type': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
+            'Accept': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
+            Date: (new Date()).toUTCString(),
+            'FSPIOP-Source': FSP_ID,
+            'FSPIOP-Destination': fspiopSourceHeader,
+            'traceparent': traceparentHeader,
+            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+          },
+          httpAgent,
+        })
+        egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_transfers'})
+      } catch(err) {
+        logger.error(err)
+        logger.error(JSON.stringify({
+          traceparent: req.headers.traceparent,
+          operation: 'fspiop_put_fx_transfers'
+        }))
+        egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_transfers'})
+      }
+    })();
+    // Sync 202
+    res.status(202).end()
+    histTimerEnd({ success: true, operation: 'fspiop_post_fx_transfers'})
+  })
+
+  // Handle Payer PUT FX Transfers callback
+  router.put('/fxTransfers/*', (req, res) => {
+    return handleCallback('fxTransfers', req, res)
+  })
 
   // Handle Payee POST /quotes
   router.post('/quotes', (req, res) => {
