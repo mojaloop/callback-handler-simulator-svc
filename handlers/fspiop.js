@@ -367,7 +367,7 @@ const init = (config, logger, options = undefined) => {
         // simulate FX rate = 1:1
         switch (req.body.conversionTerms.amountType) {
           case 'SEND':
-            req.body.conversionTerms.targetAmount = body.conversionTerms.sourceAmount
+            req.body.conversionTerms.targetAmount = req.body.conversionTerms.sourceAmount
             break
           case 'RECEIVE':
             req.body.conversionTerms.sourceAmount = req.body.conversionTerms.targetAmount
