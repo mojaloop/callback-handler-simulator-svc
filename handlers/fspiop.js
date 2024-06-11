@@ -178,11 +178,11 @@ const init = (config, logger, options = undefined) => {
         })
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_transfers'})
       } catch(err) {
-        logger.error({
+        logger.error(err)
+        logger.error(JSON.stringify({
           traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_transfers',
-          err,
-        })
+          operation: 'fspiop_put_transfers'
+        }))
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_transfers'})
       }
     })();
@@ -322,12 +322,11 @@ const init = (config, logger, options = undefined) => {
         })
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_quotes'})
       } catch(err) {
-        logger.error(JSON.stringify(err))
-        logger.error({
+        logger.error(err)
+        logger.error(JSON.stringify({
           traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_quotes',
-          err,
-        })
+          operation: 'fspiop_put_quotes'
+        }))
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_quotes'})
       }
     })();
@@ -395,12 +394,12 @@ const init = (config, logger, options = undefined) => {
         })
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_quotes'})
       } catch(err) {
-        logger.error(JSON.stringify(err))
-        logger.error({
+        logger.error(err)
+        logger.error(JSON.stringify({
           traceparent: req.headers.traceparent,
           operation: 'fspiop_put_fx_quotes',
           err,
-        })
+        }))
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_quotes'})
       }
     })();
