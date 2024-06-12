@@ -292,7 +292,7 @@ const init = (config, logger, options = undefined) => {
       ).startTimer()
       try {
         await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, {
-            "conversionState": "COMMITTED",
+            "conversionState": "RESERVED",
             "fulfilment": FULFILMENT,
             "completedTimestamp": (new Date()).toISOString()
         },
