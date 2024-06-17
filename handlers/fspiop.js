@@ -328,6 +328,11 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('fxTransfers', req, res)
   })
 
+  // Handle FXP PATCH Transfers callback
+  router.patch('/fxTransfers/*', (req, res) => {
+    res.status(202).end()
+  })
+
   // Handle Payee POST /quotes
   router.post('/quotes', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
