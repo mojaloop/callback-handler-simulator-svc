@@ -67,6 +67,7 @@ const init = (config, logger, options = undefined) => {
                 "firstName": "Justin"
               }
             },
+            "supportedCurrencies": [ "BGN" ],
             "name": "Justin Pierre"
           }
         },
@@ -270,67 +271,9 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('transfers', req, res)
   })
 
-  // Handle Payee POST /fxTransfers
-  router.post('/fxTransfers', (req, res) => {
-    const histTimerEnd = options.metrics.getHistogram(
-      'ing_callbackHandler',
-      'Ingress - Operation handler',
-      ['success', 'operation']
-    ).startTimer()
-
-    // Async callback
-    const fspiopSourceHeader = req.headers['fspiop-source']
-    const traceparentHeader = req.headers['traceparent']
-    const tracestateHeader = req.headers['tracestate'];
-    const commitRequestId = req.body.commitRequestId;
-
-    (async () => {
-      const egressHistTimerEnd = options.metrics.getHistogram(
-        'egress_callbackHandler',
-        'Egress - Operation handler',
-        ['success', 'operation']
-      ).startTimer()
-      try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, {
-            "conversionState": "RESERVED",
-            "fulfilment": FULFILMENT,
-            "completedTimestamp": (new Date()).toISOString()
-        },
-        {
-          headers: {
-            'Content-Type': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
-            'Accept': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
-            Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
-            'traceparent': traceparentHeader,
-            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
-          },
-          httpAgent,
-        })
-        egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_transfers'})
-      } catch(err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_fx_transfers'
-        }))
-        egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_transfers'})
-      }
-    })();
-    // Sync 202
-    res.status(202).end()
-    histTimerEnd({ success: true, operation: 'fspiop_post_fx_transfers'})
-  })
-
   // Handle Payer PUT FX Transfers callback
   router.put('/fxTransfers/*', (req, res) => {
     return handleCallback('fxTransfers', req, res)
-  })
-
-  // Handle FXP PATCH Transfers callback
-  router.patch('/fxTransfers/*', (req, res) => {
-    res.status(202).end()
   })
 
   // Handle Payee POST /quotes
@@ -400,74 +343,6 @@ const init = (config, logger, options = undefined) => {
   // Handle Payer PUT Quotes callback
   router.put('/quotes/*', (req, res) => {
     return handleCallback('quotes', req, res)
-  })
-
-  // Handle Payee POST /fxQuotes
-  router.post('/fxQuotes', (req, res) => {
-    const histTimerEnd = options.metrics.getHistogram(
-      'ing_callbackHandler',
-      'Ingress - Operation handler',
-      ['success', 'operation']
-    ).startTimer()
-
-    delete instance.defaults.headers.common.Accept
-
-    // Async callback
-    const fspiopSourceHeader = req.headers['fspiop-source']
-    const traceparentHeader = req.headers['traceparent']
-    const tracestateHeader = req.headers['tracestate'];
-    const conversionRequestId = req.body.conversionRequestId;
-
-    (async () => {
-      const egressHistTimerEnd = options.metrics.getHistogram(
-        'egress_callbackHandler',
-        'Egress - Operation handler',
-        ['success', 'operation']
-      ).startTimer()
-      try {
-        // simulate FX rate = 1:1
-        switch (req.body.conversionTerms.amountType) {
-          case 'SEND':
-            req.body.conversionTerms.targetAmount = req.body.conversionTerms.sourceAmount
-            break
-          case 'RECEIVE':
-            req.body.conversionTerms.sourceAmount = req.body.conversionTerms.targetAmount
-            break
-          default:
-            throw new Error('Invalid amount type')
-        }
-
-        // Important to remove the Accept header, otherwise axios will add a default one to the request
-        // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}`, {
-          "conversionTerms": req.body.conversionTerms,
-          "condition": condition
-        },
-        {
-          headers: {
-            'Content-Type': 'application/vnd.interoperability.fxQuotes+json;version=1.0',
-            Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
-            'traceparent': traceparentHeader,
-            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
-          },
-          httpAgent
-        })
-        egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_quotes'})
-      } catch(err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_fx_quotes',
-          err,
-        }))
-        egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_quotes'})
-      }
-    })();
-    // Sync 202
-    res.status(202).end()
-    histTimerEnd({ success: true, operation: 'fspiop_post_fx_quotes'})
   })
 
   // Handle Payer PUT FX Quotes callback

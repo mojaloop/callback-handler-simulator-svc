@@ -1,6 +1,7 @@
 {
   "include": [
     "src",
+    "./handlers",
     "src/**/*.json",
     "ambient.d.ts"
   ],
