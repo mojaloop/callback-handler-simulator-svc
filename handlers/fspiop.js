@@ -67,6 +67,7 @@ const init = (config, logger, options = undefined) => {
                 "firstName": "Justin"
               }
             },
+            "supportedCurrencies": [ "BGN" ],
             "name": "Justin Pierre"
           }
         },
@@ -81,7 +82,7 @@ const init = (config, logger, options = undefined) => {
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent,
-        })      
+        })
       } catch (e) {
         console.log('failed here: ', `${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`)
         logger.error(e)
@@ -178,11 +179,11 @@ const init = (config, logger, options = undefined) => {
         })
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_transfers'})
       } catch(err) {
-        logger.error({
+        logger.error(err)
+        logger.error(JSON.stringify({
           traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_transfers',
-          err,
-        })
+          operation: 'fspiop_put_transfers'
+        }))
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_transfers'})
       }
     })();
@@ -270,6 +271,10 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('transfers', req, res)
   })
 
+  // Handle Payer PUT FX Transfers callback
+  router.put('/fxTransfers/*', (req, res) => {
+    return handleCallback('fxTransfers', req, res)
+  })
 
   // Handle Payee POST /quotes
   router.post('/quotes', (req, res) => {
@@ -322,12 +327,11 @@ const init = (config, logger, options = undefined) => {
         })
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_quotes'})
       } catch(err) {
-        logger.error(JSON.stringify(err))
-        logger.error({
+        logger.error(err)
+        logger.error(JSON.stringify({
           traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_quotes',
-          err,
-        })
+          operation: 'fspiop_put_quotes'
+        }))
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_quotes'})
       }
     })();
@@ -339,6 +343,11 @@ const init = (config, logger, options = undefined) => {
   // Handle Payer PUT Quotes callback
   router.put('/quotes/*', (req, res) => {
     return handleCallback('quotes', req, res)
+  })
+
+  // Handle Payer PUT FX Quotes callback
+  router.put('/fxQuotes/*', (req, res) => {
+    return handleCallback('fxQuotes', req, res)
   })
 
   return {
