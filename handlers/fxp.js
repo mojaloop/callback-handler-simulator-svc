@@ -145,6 +145,12 @@ const init = (config, logger, options = undefined) => {
   router.patch('/fxTransfers/*', (req, res) => {
     res.status(202).end()
   })
+
+  return {
+    name: 'fxp',
+    basepath: '/fxp',
+    router
+  }
 }
 
 module.exports = {
