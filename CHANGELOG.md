@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.0.4...v0.0.5) (2024-06-18)
+
+
+### Features
+
+* fxp simulator ([#11](https://github.com/mojaloop/callback-handler-simulator-svc/issues/11)) ([7aadbe1](https://github.com/mojaloop/callback-handler-simulator-svc/commit/7aadbe149788e5b91d507819c606ac2024a9a1ae))
+
 ### [0.0.4](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.0.3...v0.0.4) (2024-05-01)
 
 
