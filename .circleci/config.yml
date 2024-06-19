@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  build: kalinkrustev/build@1.0.9
+  build: kalinkrustev/build@1.0.10
 workflows:
   build_and_test:
     jobs:
