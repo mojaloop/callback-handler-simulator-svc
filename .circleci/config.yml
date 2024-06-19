@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  pr-tools: mojaloop/pr-tools@0.1.10
   build: kalinkrustev/build@1.0.3
 workflows:
   build_and_test:
