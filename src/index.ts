@@ -30,6 +30,13 @@
 
 import Server from './server'
 import { WSServer } from './ws-server'
+import cluster from 'cluster'
 
-const wsServer = new WSServer();
-Server.run(wsServer)
+if (process.env.CBH_FORKS && cluster.isPrimary) {
+  for (let i = 0; i < parseInt(process.env.CBH_FORKS); i++) {
+    cluster.fork()
+  }
+} else {
+  const wsServer = new WSServer()
+  Server.run(wsServer)
+}
