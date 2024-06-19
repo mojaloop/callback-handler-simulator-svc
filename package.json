@@ -29,6 +29,7 @@
     "test:coverage-check": "jest -w 1 --coverage --testMatch '**/test/unit/**/*.(test|spec).ts'",
     "test:junit": "jest --reporters=default --reporters=jest-junit",
     "test:unit": "jest -w 1 --testMatch '**/test/unit/**/*.(test|spec).ts'",
+    "test:xunit": "npm run test:unit | tap-xunit > ./test/results/xunit.xml",
     "docker:build": "docker build --build-arg NODE_VERSION=\"$(cat .nvmrc)-alpine\" -t mojaloop/callback-handler-simulator-svc:local .",
     "docker:up": "docker-compose -f docker-compose.yml up",
     "docker:stop": "docker-compose -f docker-compose.yml stop",
