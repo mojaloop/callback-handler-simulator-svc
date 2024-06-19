@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  build: kalinkrustev/build@1.0.5
+  build: kalinkrustev/build@1.0.6
 workflows:
   build_and_test:
     jobs:
@@ -257,7 +257,4 @@ workflows:
               only:
                 - /(major|minor|patch)/.*/
           requires:
-            - build/test_lint
-            - build/test_unit
-            - build/test_integration
-            - build/test_functional
+            - build/publish_npm_prerelease
