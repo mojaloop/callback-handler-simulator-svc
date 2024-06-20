@@ -26,7 +26,7 @@
     "clean": "rm -rf dist",
     "test": "npm run test:unit",
     "test:coverage": "jest --coverage --coverageThreshold='{}' --testMatch '**/test/unit/**/*.(test|spec).ts'",
-    "test:coverage-check": "jest -w 1 --coverage --testMatch '**/test/unit/**/*.(test|spec).ts'",
+    "test:coverage-check": "npm run build && jest -w 1 --coverage --testMatch '**/test/unit/**/*.(test|spec).ts'",
     "test:junit": "jest --reporters=default --reporters=jest-junit",
     "test:unit": "jest -w 1 --testMatch '**/test/unit/**/*.(test|spec).ts'",
     "test:xunit": "npm run build && npm run test:unit",
