@@ -50,6 +50,7 @@ workflows:
             - build/build_local
       - build/image_scan: *scan
       - build/release:
+          context: org-global
           filters: &release
             branches:
               only:
@@ -68,14 +69,17 @@ workflows:
             - build/license_scan
             - build/image_scan
       - build/github_release:
+          context: org-global
           filters: *release
           requires:
             - build/release
       - build/publish_docker: &publish
+          context: org-global
           filters: *only-release-tags
           requires: *tests
       - build/publish_npm: *publish
       - build/publish_docker_snapshot: &publish-snapshot
+          context: org-global
           filters:
             branches:
               ignore:
@@ -85,6 +89,7 @@ workflows:
           requires: *tests
       - build/publish_npm_snapshot: *publish-snapshot
       - build/publish_npm_prerelease:
+          context: org-global
           filters: &only-prerelease-branches
             branches:
               only:
@@ -95,6 +100,7 @@ workflows:
             - build/test_integration
             - build/test_functional
       - build/publish_docker_prerelease:
+          context: org-global
           filters: *only-prerelease-branches
           requires:
             - build/publish_npm_prerelease
