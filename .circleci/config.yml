@@ -5,12 +5,14 @@ workflows:
   build_and_test:
     jobs:
       - build/pr_title_check:
+          name: PR title
           filters:
             branches:
               ignore:
                 - main
                 - master
       - build/setup:
+          name: Setup
           filters: &release-condition
             branches:
               ignore:
@@ -19,6 +21,7 @@ workflows:
             tags: &release-tags
               only: /v\d+(\.\d+){2}(-(snapshot|hotfix|perf)\.\d+)?/
       - build/test_dependencies:
+          name: Dependencies
           filters:
             branches:
               ignore:
@@ -27,20 +30,35 @@ workflows:
           requires:
             - build/setup
       - build/test_lint: &test-condition
+          name: Lint
           filters: *release-condition
           requires:
             - build/setup
-      - build/test_unit: *test-condition
-      - build/test_coverage: *test-condition
-      - build/vulnerability_check: *test-condition
-      - build/audit_licenses: *test-condition
-      - build/build_local: *test-condition
+      - build/test_unit:
+          <<: *test-condition
+          name: Unit tests
+      - build/test_coverage:
+          <<: *test-condition
+          name: Coverage
+      - build/vulnerability_check:
+          <<: *test-condition
+          name: Vulnerability check
+      - build/audit_licenses:
+          <<: *test-condition
+          name: License audit
+      - build/build_local:
+          <<: *test-condition
+          name: Build
       - build/test_integration: &test-docker
+          name: Integration tests
           filters: *release-condition
           requires:
             - build/build_local
-      - build/test_functional: *test-docker
+      - build/test_functional:
+          name: Functional tests
+          <<: *test-docker
       - build/license_scan: &scan
+          name: License scan
           filters: &only-release-tags
             branches:
               ignore:
@@ -48,8 +66,11 @@ workflows:
             tags: *release-tags
           requires:
             - build/build_local
-      - build/image_scan: *scan
+      - build/image_scan:
+          name: Image scan
+          <<: *scan
       - build/release:
+          name: Release
           context: org-global
           filters: &release
             branches:
@@ -69,16 +90,21 @@ workflows:
             - build/license_scan
             - build/image_scan
       - build/github_release:
+          name: GitHub release
           context: org-global
           filters: *release
           requires:
             - build/release
       - build/publish_docker: &publish
+          name: Docker release
           context: org-global
           filters: *only-release-tags
           requires: *tests
-      - build/publish_npm: *publish
+      - build/publish_npm:
+          name: NPM release
+          <<: *publish
       - build/publish_docker_snapshot: &publish-snapshot
+          name: Docker snapshot
           context: org-global
           filters:
             branches:
@@ -87,8 +113,11 @@ workflows:
             tags:
               only: /v\d+(\.\d+){2}(-snapshot\.\d+)?/
           requires: *tests
-      - build/publish_npm_snapshot: *publish-snapshot
+      - build/publish_npm_snapshot:
+          name: NPM snapshot
+          <<: *publish-snapshot
       - build/publish_npm_prerelease:
+          name: NPM prerelease
           context: org-global
           filters: &only-prerelease-branches
             branches:
@@ -100,6 +129,7 @@ workflows:
             - build/test_integration
             - build/test_functional
       - build/publish_docker_prerelease:
+          name: Docker prerelease
           context: org-global
           filters: *only-prerelease-branches
           requires:
