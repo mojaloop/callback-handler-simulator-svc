@@ -28,12 +28,12 @@ workflows:
                 - main
                 - master
           requires:
-            - build/setup
+            - Setup
       - build/test_lint: &test-condition
           name: Lint
           filters: *release-condition
           requires:
-            - build/setup
+            - Setup
       - build/test_unit:
           <<: *test-condition
           name: Unit tests
@@ -53,7 +53,7 @@ workflows:
           name: Integration tests
           filters: *release-condition
           requires:
-            - build/build_local
+            - Build
       - build/test_functional:
           name: Functional tests
           <<: *test-docker
@@ -65,7 +65,7 @@ workflows:
                 - /.*/
             tags: *release-tags
           requires:
-            - build/build_local
+            - Build
       - build/image_scan:
           name: Image scan
           <<: *scan
@@ -79,22 +79,21 @@ workflows:
                 - master
                 - /release\/v.*/
           requires: &tests
-            - build/pr_title_check
-            - build/test_lint
-            - build/test_unit
-            - build/test_coverage
-            - build/test_integration
-            - build/test_functional
-            - build/vulnerability_check
-            - build/audit_licenses
-            - build/license_scan
-            - build/image_scan
+            - Lint
+            - Unit tests
+            - Integration tests
+            - Functional tests
+            - Coverage
+            - Vulnerability check
+            - License audit
+            - License scan
+            - Image scan
       - build/github_release:
           name: GitHub release
           context: org-global
           filters: *release
           requires:
-            - build/release
+            - Release
       - build/publish_docker: &publish
           name: Docker release
           context: org-global
@@ -124,13 +123,13 @@ workflows:
               only:
                 - /(major|minor|patch)/.*/
           requires:
-            - build/test_lint
-            - build/test_unit
-            - build/test_integration
-            - build/test_functional
+            - Lint
+            - Unit tests
+            - Integration tests
+            - Functional tests
       - build/publish_docker_prerelease:
           name: Docker prerelease
           context: org-global
           filters: *only-prerelease-branches
           requires:
-            - build/publish_npm_prerelease
+            - NPM prerelease
