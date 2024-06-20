@@ -28,7 +28,7 @@
  --------------
  ******/
 
- export type TracestateMap = {
+export type TracestateMap = {
   tx_end2end_start_ts: number | undefined;
   tx_callback_start_ts: number | undefined;
 }
@@ -49,7 +49,7 @@ function getTraceStateMap (headers: any): TracestateMap {
       return k.startsWith('tx_') ? { [k]: Number(v) } : { [k]: v }
     })
     .forEach(ts => {
-    tracestates = { ...tracestates, ...ts }
+      tracestates = { ...tracestates, ...ts }
     })
   return tracestates as TracestateMap
 }
@@ -59,10 +59,10 @@ function getTraceId (headers: any): string | null {
   if (traceparent === undefined) {
     return null
   }
-  return traceparent.split('-')[1];
+  return traceparent.split('-')[1]
 }
 
 export const TraceUtils = {
   getTraceStateMap,
-  getTraceId  
+  getTraceId
 }

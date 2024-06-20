@@ -70,12 +70,12 @@ export class WSServer {
   }
 
   // Broadcast to all.
-  broadcast (message: string) {
-    logger.debug(`Broadcasting to all clients: ${message}`)
-    this.wsServer.clients.forEach(function each (client) {
-      client.send(message)
-    })
-  }
+  // broadcast (message: string) {
+  //   logger.debug(`Broadcasting to all clients: ${message}`)
+  //   this.wsServer.clients.forEach(function each (client) {
+  //     client.send(message)
+  //   })
+  // }
 
   notify (channel:string, message: string) {
     logger.debug(`Notifying channel ${channel}: ${message}`)

@@ -56,46 +56,79 @@ describe('start', () => {
     expect(jsonResult.status).toEqual('OK')
   })
 
-  it.skip('wildcard endpoint success callback should work', async () => {
+  it('metrics endpoint should work', async () => {
+    const app = Server.getApp()
+    const result = await request(app).get('/metrics')
+    expect(result.statusCode).toEqual(200)
+  })
+
+  it('wildcard endpoint success callback should work', async () => {
     const app = Server.getApp()
     const e2eStart = new Date(Date.now() - 1000 * 5).valueOf()
     const e2eCallbackStart = new Date(Date.now() - 1000 * 3).valueOf()
     const result = await
     request(app)
-      .put('/parties/111')
+      .put('/fspiop/parties/111')
       .set('tracestate', `tx_end2end_start_ts=${e2eStart},tx_callback_start_ts=${e2eCallbackStart}`)
       .set('traceparent', '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01')
 
     expect(result.statusCode).toEqual(202)
   })
 
-  it.skip('wildcard endpoint error callback should work', async () => {
+  it('wildcard endpoint success callback should work', async () => {
     const app = Server.getApp()
     const e2eStart = new Date(Date.now() - 1000 * 5).valueOf()
     const e2eCallbackStart = new Date(Date.now() - 1000 * 3).valueOf()
     const result = await
     request(app)
-      .put('/parties/111/error')
+      .put('/fspiop/parties/111')
       .set('tracestate', `tx_end2end_start_ts=${e2eStart},tx_callback_start_ts=${e2eCallbackStart}`)
       .set('traceparent', '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01')
 
     expect(result.statusCode).toEqual(202)
   })
 
-  it.skip('wildcard endpoint should throw error when tracestate key values are not found', async () => {
+  it('wildcard endpoint error callback should work', async () => {
+    const app = Server.getApp()
+    const e2eStart = new Date(Date.now() - 1000 * 5).valueOf()
+    const e2eCallbackStart = new Date(Date.now() - 1000 * 3).valueOf()
+    const result = await
+    request(app)
+      .put('/fspiop/parties/111/error')
+      .set('tracestate', `tx_end2end_start_ts=${e2eStart},tx_callback_start_ts=${e2eCallbackStart}`)
+      .set('traceparent', '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01')
+
+    expect(result.statusCode).toEqual(202)
+  })
+
+  it('wildcard endpoint should throw error when tracestate key values are not found', async () => {
     const app = Server.getApp()
     const result = await
     request(app)
-      .put('/test/error')
+      .put('/fspiop/parties/111')
       .set('tracestate', '')
     expect(result.statusCode).toEqual(400)
   })
 
-  it.skip('wildcard endpoint should throw error when tracestate header is not set', async () => {
+  it('wildcard endpoint should throw error when tracestate header is not set', async () => {
     const app = Server.getApp()
     const result = await
     request(app)
-      .put('/test/error')
+      .put('/fspiop/parties/111')
     expect(result.statusCode).toEqual(400)
+  })
+
+  it('ws connection should work', async () => {
+    const callbacks: {[key: string]: Function} = {}
+    ws.wsServer.emit('connection', {
+      on(event: string , cb: Function) {
+        callbacks[event] = cb
+      }
+    }, { url: '/ws' })
+    expect(ws.wsClientMap).toHaveProperty('/ws')
+    expect(ws.wsClientMap['/ws']).toHaveProperty('on')
+    callbacks.message('test message')
+    callbacks.close()
+    expect(ws.wsClientMap).not.toHaveProperty('/ws')
   })
 })

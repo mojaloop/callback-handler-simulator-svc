@@ -28,6 +28,7 @@
  --------------
  ******/
 
+// istanbul ignore file
 import Server from './server'
 import { WSServer } from './ws-server'
 import cluster from 'cluster'
