@@ -10,6 +10,10 @@ module.exports = {
   testEnvironment: 'node',
   collectCoverage: false,
   collectCoverageFrom: ['./src/**/*.ts'],
+  coveragePathIgnorePatterns : [
+    '/node_modules/',
+    '<rootDir>/src/local-packages/utils/index.ts'
+  ],
   coverageReporters: ['json', 'lcov', 'text'],
   clearMocks: false,
   coverageThreshold: {

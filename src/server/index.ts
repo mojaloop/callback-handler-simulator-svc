@@ -96,7 +96,7 @@ async function run (wsServer: WSServer): Promise<void> {
 }
 
 async function terminate (): Promise<void> {
-  appInstance.close()
+  appInstance?.close()
   Logger.isInfoEnabled && Logger.info('service stopped')
 }
 
