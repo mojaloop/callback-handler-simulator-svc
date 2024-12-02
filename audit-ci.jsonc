@@ -8,6 +8,7 @@
     "GHSA-wf5p-g6vw-rhxx", // axios
     "GHSA-pfrx-2q88-qq97", // npm-check-updates>update-notifier>latest-version>package-json>got
     "GHSA-p8p7-x288-28g6", // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request
-    "GHSA-72xf-g2v4-qvf3"  // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request>tough-cookie
+    "GHSA-72xf-g2v4-qvf3",  // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request>tough-cookie
+    "GHSA-3xgq-45jj-v275" // https://github.com/advisories/GHSA-3xgq-45jj-v275
   ]
 }
