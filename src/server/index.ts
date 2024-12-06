@@ -135,12 +135,12 @@ app.use(function isoCodec (req: Request & { encode?: (...arg: any[]) => Promise<
         TransformFacades.FSPIOPISO20022[operation][req.method.toLowerCase() as 'post'](req as any).then(({
           body
         }) => {
-          req.body = body
           switch (operation) {
             case 'quotes':
-              $context.isoPostQuote = body
+              $context.isoPostQuote = req.body
               break
           }
+          req.body = body
           next()
         }, (error: Error) => {
           Logger.error(error)
