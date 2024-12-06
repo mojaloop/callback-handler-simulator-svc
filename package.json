@@ -49,6 +49,7 @@
     "@callback-handler-simulator-svc/utils": "file:./dist/local-packages/utils",
     "@mojaloop/central-services-logger": "11.5.1",
     "@mojaloop/central-services-metrics": "12.3.0",
+    "@mojaloop/ml-schema-transformer-lib": "2.4.1",
     "axios": "1.7.8",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",

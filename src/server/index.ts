@@ -32,7 +32,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../ambient.d.ts"/>
 /* eslint-disable camelcase */
-import express from 'express'
+import express, { Request } from 'express'
 import expressListEndpoints from 'express-list-endpoints'
 import http from 'http'
 import Config from '../shared/config'
@@ -42,6 +42,7 @@ import { logger } from '../shared/logger'
 import { WSServer } from '../ws-server'
 import path from 'path'
 import requireGlob from 'require-glob'
+import { TransformFacades } from '@mojaloop/ml-schema-transformer-lib'
 
 const app = express()
 let appInstance: http.Server
@@ -103,6 +104,55 @@ async function terminate (): Promise<void> {
 function getApp (): any {
   return app
 }
+
+app.use(function isoCodec (req: Request & { encode?: (...arg: any[]) => Promise<any> }, res, next) {
+  if (Config.API_TYPE === 'iso20022') {
+    const operation = req.path.split('/')[2] as 'quotes' | 'transfers' | 'fxQuotes' | 'fxTransfers'
+    if (['quotes', 'transfers', 'fxQuotes', 'fxTransfers', 'parties', 'participants'].includes(operation)) {
+      const $context = { isoPostQuote: {} }
+      req.encode = async (body, options, params = {}) => {
+        const result = TransformFacades.FSPIOP[operation]
+          ? await TransformFacades.FSPIOP[operation].put({
+            body,
+            headers: options.headers,
+            params,
+            $context
+          })
+          : { body }
+        const replace = (header: string) => {
+          if (options.headers[header]) {
+            options.headers[header] = options.headers[header].replace(
+              'application/vnd.interoperability.',
+              'application/vnd.interoperability.iso20022.'
+            ).replace(/;version=.*/, ';version=2.0')
+          }
+        }
+        replace('accept')
+        replace('content-type')
+        return [result.body, options]
+      }
+      if (req.method === 'POST' && TransformFacades.FSPIOPISO20022[operation]) {
+        TransformFacades.FSPIOPISO20022[operation][req.method.toLowerCase() as 'post'](req as any).then(({
+          body
+        }) => {
+          req.body = body
+          switch (operation) {
+            case 'quotes':
+              $context.isoPostQuote = body
+              break
+          }
+          next()
+        }, (error: Error) => {
+          Logger.error(error)
+          console.error(error)
+          res.status(500).send(error)
+        })
+        return
+      }
+    }
+  } else req.encode = async (...data) => data
+  next()
+})
 
 export default {
   run,

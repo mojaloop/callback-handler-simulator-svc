@@ -35,6 +35,7 @@ export interface ServiceConfig {
   // API Server
   PORT: number;
   HOST: string;
+  API_TYPE?: 'iso20022' | 'fspiop';
   WS_SERVER: {
     ENABLED: boolean
     PORT: number
@@ -80,6 +81,12 @@ export const ConvictConfig = Convict<ServiceConfig>({
       default: 3002,
       env: 'WS_SERVER_PORT'
     }
+  },
+  API_TYPE: {
+    doc: 'The type of API to use',
+    format: ['iso20022', 'fspiop'],
+    default: 'fspiop',
+    env: 'API_TYPE'
   },
   INSTRUMENTATION: {
     METRICS: {
@@ -128,6 +135,7 @@ ConvictConfig.validate({ allowed: 'strict' })
 const config: ServiceConfig = {
   HOST: ConvictConfig.get('HOST'),
   PORT: ConvictConfig.get('PORT'),
+  API_TYPE: ConvictConfig.get('API_TYPE'),
   WS_SERVER: ConvictConfig.get('WS_SERVER'),
   INSTRUMENTATION: ConvictConfig.get('INSTRUMENTATION')
 }

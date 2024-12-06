@@ -1,0 +1,68 @@
+POST http://localhost:3001/fspiop/quotes
+Content-Type: application/vnd.interoperability.iso20022.quotes+json;version=2.0
+FSPIOP-Source: payerfsp
+FSPIOP-Destination: payeefsp
+traceparent: 00-aabb58481421f928a6e88468409959df-0123456789abcdef0-00
+
+{
+  "GrpHdr": {
+    "MsgId": "01JEBS69VWZY2E9KRNMVYVV1ZF",
+    "CreDtTm": "2024-12-05T16:07:03.804Z",
+    "NbOfTxs": "1",
+    "SttlmInf": {
+      "SttlmMtd": "CLRG"
+    }
+  },
+  "CdtTrfTxInf": {
+    "PmtId": {
+      "TxId": "01JEBS69VK6AEA8TGAJE3ZA9EH",
+      "EndToEndId": "01JEBS69VK6AEA8TGAJE3ZA9EJ"
+    },
+    "Cdtr": {
+      "Id": {
+        "PrvtId": {
+          "Othr": {
+            "SchmeNm": {
+              "Prtry": "MSISDN"
+            },
+            "Id": "27713803912"
+          }
+        }
+      }
+    },
+    "CdtrAgt": {
+      "FinInstnId": {
+        "Othr": {
+          "Id": "payeefsp"
+        }
+      }
+    },
+    "Dbtr": {
+      "Id": {
+        "PrvtId": {
+          "Othr": {
+            "SchmeNm": {
+              "Prtry": "MSISDN"
+            },
+            "Id": "44123456789"
+          }
+        }
+      }
+    },
+    "DbtrAgt": {
+      "FinInstnId": {
+        "Othr": {
+          "Id": "testingtoolkitdfsp"
+        }
+      }
+    },
+    "IntrBkSttlmAmt": {
+      "Ccy": "XXX",
+      "ActiveCurrencyAndAmount": "100"
+    },
+    "Purp": {
+      "Prtry": "TRANSFER"
+    },
+    "ChrgBr": "DEBT"
+  }
+}

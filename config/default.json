@@ -5,6 +5,7 @@
     "ENABLED": true,
     "PORT": 3002
   },
+  "API_TYPE": "fspiop",
   "INSTRUMENTATION": {
     "METRICS": {
       "DISABLED": false,

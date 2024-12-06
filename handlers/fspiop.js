@@ -21,7 +21,7 @@ const init = (config, logger, options = undefined) => {
   const router = express.Router()
   const ilpPacket = env.get('CBH_FSPIOP_QUOTES_ILPPACKET').asString()
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
-  const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt()
+  const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt() || 60000
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
   // Handle Payee GET Party
@@ -51,7 +51,7 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`, {
+        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`, ... await req.encode({
           "party": {
             "partyIdInfo": {
               "type": "CONSUMER",
@@ -73,22 +73,28 @@ const init = (config, logger, options = undefined) => {
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.parties+json;version=1.1',
-            'Accept': 'application/vnd.interoperability.parties+json;version=1.1',
+            'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
+            'accept': 'application/vnd.interoperability.parties+json;version=1.1',
             Date: new Date(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent,
-        })
-      } catch (e) {
-        console.log('failed here: ', `${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`)
-        logger.error(e)
-
+        }, {
+          ID: id,
+          Type: type
+        }))
+        egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
+      } catch (err) {
+        logger.error(err)
+        logger.error(JSON.stringify({
+          traceparent: req.headers.traceparent,
+          operation: 'fspiop_put_parties'
+        }))
+        egressHistTimerEnd({ success: false, operation: 'fspiop_put_parties'})
       }
-      egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
       histTimerEnd1({ success: true, operation: 'fspiop_get_parties_with_callback'})
     })();
     // Sync 202
@@ -117,21 +123,30 @@ const init = (config, logger, options = undefined) => {
         'Egress - Operation handler',
         ['success', 'operation']
       ).startTimer()
-      await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/participants/${type}/${id}`, {
-        "fspId": ""
-      },
-      {
-        headers: {
-          'Content-Type': 'application/vnd.interoperability.participants+json;version=1.1',
-          Date: new Date(),
-          'FSPIOP-Source': FSP_ID,
-          'FSPIOP-Destination': fspiopSourceHeader,
-          'traceparent': traceparentHeader,
-          'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+      try {
+        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/participants/${type}/${id}`, ... await req.encode({
+          "fspId": ""
         },
-        httpAgent,
-      })
-      egressHistTimerEnd({ success: true, operation: 'fspiop_put_participants'})
+        {
+          headers: {
+            'content-type': 'application/vnd.interoperability.participants+json;version=1.1',
+            Date: new Date(),
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
+            'traceparent': traceparentHeader,
+            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+          },
+          httpAgent,
+        }))
+        egressHistTimerEnd({ success: true, operation: 'fspiop_put_participants'})
+      } catch (err) {
+        logger.error(err)
+        logger.error(JSON.stringify({
+          traceparent: req.headers.traceparent,
+          operation: 'fspiop_put_participants'
+        }))
+        egressHistTimerEnd({ success: false, operation: 'fspiop_put_participants'})
+      }
     })();
     // Sync 202
     res.status(202).end()
@@ -160,23 +175,25 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`, {
+        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`, ... await req.encode({
             "transferState": "COMMITTED",
             "fulfilment": FULFILMENT,
             "completedTimestamp": (new Date()).toISOString()
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.transfers+json;version=1.1',
-            'Accept': 'application/vnd.interoperability.transfers+json;version=1.1',
+            'content-type': 'application/vnd.interoperability.transfers+json;version=1.1',
+            'accept': 'application/vnd.interoperability.transfers+json;version=1.1',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent,
-        })
+        }, {
+          ID: transferId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_transfers'})
       } catch(err) {
         logger.error(err)
@@ -305,7 +322,7 @@ const init = (config, logger, options = undefined) => {
 
         // Important to remove the Accept header, otherwise axios will add a default one to the request
         // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`, {
+        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`, ... await req.encode({
           "transferAmount": {
             "currency": `${quoteBody.amount.currency}`,
             "amount": `${quoteTransferAmount}`
@@ -316,15 +333,17 @@ const init = (config, logger, options = undefined) => {
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.quotes+json;version=1.0',
+            'content-type': 'application/vnd.interoperability.quotes+json;version=1.0',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent
-        })
+        }, {
+          ID: quoteId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_quotes'})
       } catch(err) {
         logger.error(err)
