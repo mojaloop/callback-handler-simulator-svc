@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.0.5...v0.1.1) (2024-12-09)
+
+
+### Features
+
+* add ISO 20022 support ([#13](https://github.com/mojaloop/callback-handler-simulator-svc/issues/13)) ([02bba97](https://github.com/mojaloop/callback-handler-simulator-svc/commit/02bba97e9a5b3eb666a1af72c552b32d69a665d5))
+* cluster ([#12](https://github.com/mojaloop/callback-handler-simulator-svc/issues/12)) ([b3f83ac](https://github.com/mojaloop/callback-handler-simulator-svc/commit/b3f83ac5af42313693108ba5790385cb567c6d82))
+
 ### [0.0.5](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.0.4...v0.0.5) (2024-06-18)
 
 
