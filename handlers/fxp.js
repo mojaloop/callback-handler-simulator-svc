@@ -5,8 +5,8 @@ const env = require('env-var')
 
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
 
-// Condition: 5m0gq_5dLQlTSSRKQmLpj0MZ1MtWLWgSu1oLGVTJyYs
-const FULFILMENT = 'lnYe4rYwLthWbzhVyX5cAuDfL1Ulw4WdaTgyGDREysw'
+// Condition: GIxd5xcohkmnnXolpTv_OxwpyaH__Oiq49JTvCo8pyA
+const FULFILMENT = 'V-IalzIzy-zxy0SrlY1Ku2OE9aS4KgGZ0W-Zq5_BeC0'
 const instance = axios.create()
 
 const init = (config, logger, options = undefined) => {
@@ -57,21 +57,23 @@ const init = (config, logger, options = undefined) => {
 
         // Important to remove the Accept header, otherwise axios will add a default one to the request
         // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}`, {
+        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}`, ... await req.encode({
           conversionTerms: req.body.conversionTerms,
           condition
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.fxQuotes+json;version=1.0',
+            'content-type': 'application/vnd.interoperability.fxQuotes+json;version=1.0',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             traceparent: traceparentHeader,
             tracestate: tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent
-        })
+        }, {
+          ID: conversionRequestId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_quotes' })
       } catch (err) {
         logger.error(err)
@@ -109,23 +111,25 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, {
+        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, ... await req.encode({
           conversionState: 'RESERVED',
           fulfilment: FULFILMENT,
           completedTimestamp: (new Date()).toISOString()
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
-            Accept: 'application/vnd.interoperability.fxTransfers+json;version=1.1',
+            'content-type': 'application/vnd.interoperability.fxTransfers+json;version=1.1',
+            accept: 'application/vnd.interoperability.fxTransfers+json;version=1.1',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             traceparent: traceparentHeader,
             tracestate: tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent
-        })
+        }, {
+          ID: commitRequestId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_transfers' })
       } catch (err) {
         logger.error(err)

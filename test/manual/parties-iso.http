@@ -1,0 +1,4 @@
+GET http://localhost:3001/fspiop/parties/MSISDN/44123456789
+Content-Type: application/vnd.interoperability.iso20022.parties+json;version=2.0
+FSPIOP-Source: payerfsp
+traceparent: 00-aabb58481421f928a6e88468409959df-0123456789abcdef0-00

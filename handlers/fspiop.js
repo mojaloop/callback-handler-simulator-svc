@@ -7,9 +7,9 @@ const env = require('env-var')
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
 
-// ILP Packet: AYIDGQAAAAAAACcQIWcuZ3JlZW5iYW5rZnNwLm1zaXNkbi4yNzcxMzgwMzkxMoIC62V5SjBjbUZ1YzJGamRHbHZia2xrSWpvaU1ERXhaR1EyTldZdE5UQXpNeTAwTVdNMkxUazFaR1l0T1RFeFl6WTRPVFExWWpobUlpd2ljWFZ2ZEdWSlpDSTZJbVF3TXpJMU1EVTJMVE0xTldFdE5EUmxNUzFpT1RnMExXWXdZVFExTmpFMFkyRXpPQ0lzSW5CaGVXVmxJanA3SW5CaGNuUjVTV1JKYm1adklqcDdJbkJoY25SNVNXUlVlWEJsSWpvaVRWTkpVMFJPSWl3aWNHRnlkSGxKWkdWdWRHbG1hV1Z5SWpvaU1qYzNNVE00TURNNU1USWlMQ0ptYzNCSlpDSTZJbWR5WldWdVltRnVhMlp6Y0NKOWZTd2ljR0Y1WlhJaU9uc2ljR0Z5ZEhsSlpFbHVabThpT25zaWNHRnlkSGxKWkZSNWNHVWlPaUpOVTBsVFJFNGlMQ0p3WVhKMGVVbGtaVzUwYVdacFpYSWlPaUkwTkRFeU16UTFOamM0T1NJc0ltWnpjRWxrSWpvaWNHbHVhMkpoYm10bWMzQWlmU3dpY0dWeWMyOXVZV3hKYm1adklqcDdJbU52YlhCc1pYaE9ZVzFsSWpwN0ltWnBjbk4wVG1GdFpTSTZJa1pwY25OMGJtRnRaUzFVWlhOMElpd2liR0Z6ZEU1aGJXVWlPaUpNWVhOMGJtRnRaUzFVWlhOMEluMHNJbVJoZEdWUFprSnBjblJvSWpvaU1UazROQzB3TVMwd01TSjlmU3dpWVcxdmRXNTBJanA3SW1OMWNuSmxibU41SWpvaVZWTkVJaXdpWVcxdmRXNTBJam9pTVRBd0luMHNJblJ5WVc1ellXTjBhVzl1Vkhsd1pTSTZleUp6WTJWdVlYSnBieUk2SWxSU1FVNVRSa1ZTSWl3aWFXNXBkR2xoZEc5eUlqb2lVRUZaUlZJaUxDSnBibWwwYVdGMGIzSlVlWEJsSWpvaVEwOU9VMVZOUlZJaWZYMAA
-// Condition: 5m0gq_5dLQlTSSRKQmLpj0MZ1MtWLWgSu1oLGVTJyYs
-const FULFILMENT = 'lnYe4rYwLthWbzhVyX5cAuDfL1Ulw4WdaTgyGDREysw'
+// ILP Packet: DIICtgAAAAAAD0JAMjAyNDEyMDUxNjA4MDM5MDcYjF3nFyiGSaedeiWlO_87HCnJof_86Krj0lO8KjynIApnLm1vamFsb29wggJvZXlKeGRXOTBaVWxrSWpvaU1ERktSVUpUTmpsV1N6WkJSVUU0VkVkQlNrVXpXa0U1UlVnaUxDSjBjbUZ1YzJGamRHbHZia2xrSWpvaU1ERktSVUpUTmpsV1N6WkJSVUU0VkVkQlNrVXpXa0U1UlVvaUxDSjBjbUZ1YzJGamRHbHZibFI1Y0dVaU9uc2ljMk5sYm1GeWFXOGlPaUpVVWtGT1UwWkZVaUlzSW1sdWFYUnBZWFJ2Y2lJNklsQkJXVVZTSWl3aWFXNXBkR2xoZEc5eVZIbHdaU0k2SWtKVlUwbE9SVk5USW4wc0luQmhlV1ZsSWpwN0luQmhjblI1U1dSSmJtWnZJanA3SW5CaGNuUjVTV1JVZVhCbElqb2lUVk5KVTBST0lpd2ljR0Z5ZEhsSlpHVnVkR2xtYVdWeUlqb2lNamMzTVRNNE1ETTVNVElpTENKbWMzQkpaQ0k2SW5CaGVXVmxabk53SW4xOUxDSndZWGxsY2lJNmV5SndZWEowZVVsa1NXNW1ieUk2ZXlKd1lYSjBlVWxrVkhsd1pTSTZJazFUU1ZORVRpSXNJbkJoY25SNVNXUmxiblJwWm1sbGNpSTZJalEwTVRJek5EVTJOemc1SWl3aVpuTndTV1FpT2lKMFpYTjBhVzVuZEc5dmJHdHBkR1JtYzNBaWZYMHNJbVY0Y0dseVlYUnBiMjRpT2lJeU1ESTBMVEV5TFRBMVZERTJPakE0T2pBekxqa3dOMW9pTENKaGJXOTFiblFpT25zaVlXMXZkVzUwSWpvaU1UQXdJaXdpWTNWeWNtVnVZM2tpT2lKWVdGZ2lmWDA
+// Condition: GIxd5xcohkmnnXolpTv_OxwpyaH__Oiq49JTvCo8pyA
+const FULFILMENT = 'V-IalzIzy-zxy0SrlY1Ku2OE9aS4KgGZ0W-Zq5_BeC0'
 const instance = axios.create()
 
 const init = (config, logger, options = undefined) => {
@@ -21,7 +21,7 @@ const init = (config, logger, options = undefined) => {
   const router = express.Router()
   const ilpPacket = env.get('CBH_FSPIOP_QUOTES_ILPPACKET').asString()
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
-  const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt()
+  const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt() || 60000
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
   // Handle Payee GET Party
@@ -51,7 +51,7 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`, {
+        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`, ... await req.encode({
           "party": {
             "partyIdInfo": {
               "type": "CONSUMER",
@@ -73,22 +73,28 @@ const init = (config, logger, options = undefined) => {
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.parties+json;version=1.1',
-            'Accept': 'application/vnd.interoperability.parties+json;version=1.1',
+            'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
+            'accept': 'application/vnd.interoperability.parties+json;version=1.1',
             Date: new Date(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent,
-        })
-      } catch (e) {
-        console.log('failed here: ', `${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`)
-        logger.error(e)
-
+        }, {
+          ID: id,
+          Type: type
+        }))
+        egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
+      } catch (err) {
+        logger.error(err)
+        logger.error(JSON.stringify({
+          traceparent: req.headers.traceparent,
+          operation: 'fspiop_put_parties'
+        }))
+        egressHistTimerEnd({ success: false, operation: 'fspiop_put_parties'})
       }
-      egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
       histTimerEnd1({ success: true, operation: 'fspiop_get_parties_with_callback'})
     })();
     // Sync 202
@@ -117,21 +123,30 @@ const init = (config, logger, options = undefined) => {
         'Egress - Operation handler',
         ['success', 'operation']
       ).startTimer()
-      await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/participants/${type}/${id}`, {
-        "fspId": ""
-      },
-      {
-        headers: {
-          'Content-Type': 'application/vnd.interoperability.participants+json;version=1.1',
-          Date: new Date(),
-          'FSPIOP-Source': FSP_ID,
-          'FSPIOP-Destination': fspiopSourceHeader,
-          'traceparent': traceparentHeader,
-          'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+      try {
+        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/participants/${type}/${id}`, ... await req.encode({
+          "fspId": ""
         },
-        httpAgent,
-      })
-      egressHistTimerEnd({ success: true, operation: 'fspiop_put_participants'})
+        {
+          headers: {
+            'content-type': 'application/vnd.interoperability.participants+json;version=1.1',
+            Date: new Date(),
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
+            'traceparent': traceparentHeader,
+            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+          },
+          httpAgent,
+        }))
+        egressHistTimerEnd({ success: true, operation: 'fspiop_put_participants'})
+      } catch (err) {
+        logger.error(err)
+        logger.error(JSON.stringify({
+          traceparent: req.headers.traceparent,
+          operation: 'fspiop_put_participants'
+        }))
+        egressHistTimerEnd({ success: false, operation: 'fspiop_put_participants'})
+      }
     })();
     // Sync 202
     res.status(202).end()
@@ -160,23 +175,25 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`, {
+        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`, ... await req.encode({
             "transferState": "COMMITTED",
             "fulfilment": FULFILMENT,
             "completedTimestamp": (new Date()).toISOString()
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.transfers+json;version=1.1',
-            'Accept': 'application/vnd.interoperability.transfers+json;version=1.1',
+            'content-type': 'application/vnd.interoperability.transfers+json;version=1.1',
+            'accept': 'application/vnd.interoperability.transfers+json;version=1.1',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent,
-        })
+        }, {
+          ID: transferId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_transfers'})
       } catch(err) {
         logger.error(err)
@@ -305,7 +322,7 @@ const init = (config, logger, options = undefined) => {
 
         // Important to remove the Accept header, otherwise axios will add a default one to the request
         // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`, {
+        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`, ... await req.encode({
           "transferAmount": {
             "currency": `${quoteBody.amount.currency}`,
             "amount": `${quoteTransferAmount}`
@@ -316,15 +333,17 @@ const init = (config, logger, options = undefined) => {
         },
         {
           headers: {
-            'Content-Type': 'application/vnd.interoperability.quotes+json;version=1.0',
+            'content-type': 'application/vnd.interoperability.quotes+json;version=1.0',
             Date: (new Date()).toUTCString(),
-            'FSPIOP-Source': FSP_ID,
-            'FSPIOP-Destination': fspiopSourceHeader,
+            'fspiop-source': FSP_ID,
+            'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
             'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
           },
           httpAgent
-        })
+        }, {
+          ID: quoteId
+        }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_quotes'})
       } catch(err) {
         logger.error(err)

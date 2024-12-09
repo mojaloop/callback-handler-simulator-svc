@@ -8,6 +8,10 @@
     "GHSA-wf5p-g6vw-rhxx", // axios
     "GHSA-pfrx-2q88-qq97", // npm-check-updates>update-notifier>latest-version>package-json>got
     "GHSA-p8p7-x288-28g6", // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request
-    "GHSA-72xf-g2v4-qvf3"  // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request>tough-cookie
+    "GHSA-72xf-g2v4-qvf3",  // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request>tough-cookie
+    "GHSA-3xgq-45jj-v275", // https://github.com/advisories/GHSA-3xgq-45jj-v275
+    "GHSA-phwq-j96m-2c2q", // https://github.com/advisories/GHSA-phwq-j96m-2c2q
+    "GHSA-ghr5-ch3p-vcr6", // https://github.com/advisories/GHSA-ghr5-ch3p-vcr6
+    "GHSA-cgfm-xwp7-2cvr" // https://github.com/advisories/GHSA-cgfm-xwp7-2cvr
   ]
 }

@@ -1,4 +1,7 @@
 ## Add a TODO comment indicating the reason for each rejected dependency upgrade added to this list, and what should be done to resolve it (i.e. handle it through a story, etc).
 reject: [
    "eslint", ## can't upgrade until eslint peer dependency in @typescript-eslint/parser is upgraded
+   "eslint-plugin-promise",
+   "@typescript-eslint/eslint-plugin", ## can't upgrade due to Definition for rule '@typescript-eslint/indent' was not found
+   "@typescript-eslint/parser",
 ]
