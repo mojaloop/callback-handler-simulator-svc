@@ -48,7 +48,7 @@
   "dependencies": {
     "@callback-handler-simulator-svc/utils": "file:./dist/local-packages/utils",
     "@mojaloop/central-services-logger": "11.5.1",
-    "@mojaloop/central-services-metrics": "12.4.0",
+    "@mojaloop/central-services-metrics": "12.4.1",
     "@mojaloop/ml-schema-transformer-lib": "2.4.1",
     "axios": "1.7.9",
     "convict": "^6.2.4",
