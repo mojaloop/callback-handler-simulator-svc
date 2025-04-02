@@ -58,6 +58,8 @@ function getTraceId (headers) {
 }
 
 module.exports = {
-  getTraceStateMap,
-  getTraceId
-}
+  TraceUtils: {
+    getTraceStateMap,
+    getTraceId
+}}
+
