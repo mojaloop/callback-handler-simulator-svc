@@ -28,6 +28,6 @@
  --------------
  ******/
 
-import Logger from '@mojaloop/central-services-logger'
+import { loggerFactory } from '@mojaloop/central-services-logger/src/contextLogger'
 
-export const logger = Logger
+export const logger = loggerFactory('perf-sim')
