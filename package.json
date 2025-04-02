@@ -46,7 +46,6 @@
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
-    "@callback-handler-simulator-svc/utils": "file:./dist/local-packages/utils",
     "@mojaloop/central-services-logger": "11.8.1",
     "@mojaloop/central-services-metrics": "12.5.0",
     "@mojaloop/ml-schema-transformer-lib": "2.7.1",

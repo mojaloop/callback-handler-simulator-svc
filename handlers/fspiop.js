@@ -1,7 +1,7 @@
 const axios = require('axios')
 const http = require('http')
 const express = require('express')
-const { TraceUtils } = require('@callback-handler-simulator-svc/utils')
+const { TraceUtils } = require('./trace')
 const env = require('env-var')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
