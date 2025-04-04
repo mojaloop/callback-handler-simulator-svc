@@ -82,7 +82,7 @@ const init = (config, logger, options = undefined) => {
           headers: {
             'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
             'accept': 'application/vnd.interoperability.parties+json;version=1.1',
-            Date: new Date(),
+            Date: (new Date()).toUTCString(),
             'fspiop-source': FSP_ID,
             'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
@@ -133,7 +133,7 @@ const init = (config, logger, options = undefined) => {
         {
           headers: {
             'content-type': 'application/vnd.interoperability.participants+json;version=1.1',
-            Date: new Date(),
+            Date: (new Date()).toUTCString(),
             'fspiop-source': FSP_ID,
             'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
