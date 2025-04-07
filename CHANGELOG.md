@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.2...v0.1.3) (2025-04-07)
+
+
+### Bug Fixes
+
+* update dependencies and improve logging ([#16](https://github.com/mojaloop/callback-handler-simulator-svc/issues/16)) ([1222e5c](https://github.com/mojaloop/callback-handler-simulator-svc/commit/1222e5c1a8b5b4f5ac86e27689d02f2acd8f840d))
+
 ### [0.1.2](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.1...v0.1.2) (2025-02-04)
 
 ### [0.1.1](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.0.5...v0.1.1) (2024-12-09)
