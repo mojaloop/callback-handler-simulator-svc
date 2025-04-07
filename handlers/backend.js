@@ -1,5 +1,5 @@
 const express = require('express')
-const { TraceUtils } = require('@callback-handler-simulator-svc/utils')
+const { TraceUtils } = require('./trace')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'

@@ -36,7 +36,6 @@ import express, { Request } from 'express'
 import expressListEndpoints from 'express-list-endpoints'
 import http from 'http'
 import Config from '../shared/config'
-import Logger from '@mojaloop/central-services-logger'
 import Metrics from '@mojaloop/central-services-metrics'
 import { logger } from '../shared/logger'
 import { WSServer } from '../ws-server'
@@ -60,13 +59,13 @@ app.use(express.json({
 
 async function run (wsServer: WSServer): Promise<void> {
   const handlersList = await requireGlob(path.join(process.cwd(), './handlers/**.js'))
-  Logger.isInfoEnabled && Logger.info(`Handler imports found ${JSON.stringify(handlersList)}`)
+  logger.isInfoEnabled && logger.info(`Handler imports found ${JSON.stringify(handlersList)}`)
   // e.g. https://www.npmjs.com/package/require-glob
   // import all imports from "working-dir/handlers/*.js"(options) into handlersList
   for (const key in handlersList) {
     if (Object.prototype.hasOwnProperty.call(handlersList[key], 'init')) {
       const handlerObject = handlersList[key]
-      const handlers = handlerObject.init(Config, Logger, { wsServer, metrics: Metrics })
+      const handlers = handlerObject.init(Config, logger, { wsServer, metrics: Metrics })
       app.use(handlers.basepath, handlers.router)
     }
   }
@@ -87,18 +86,18 @@ async function run (wsServer: WSServer): Promise<void> {
     res.send(await Metrics.getMetricsForPrometheus())
   })
   appInstance = app.listen(Config.PORT)
-  Logger.isInfoEnabled &&
-    Logger.info(`
+  logger.isInfoEnabled &&
+    logger.info(`
       \nRegistered Endpoints:
       \n=====================
       \n${expressListEndpoints(app).map(e => `${e.methods} ${e.path}`).join('\n')}`
     )
-  Logger.isInfoEnabled && Logger.info(`Service is running on port ${Config.PORT}`)
+  logger.isInfoEnabled && logger.info(`Service is running on port ${Config.PORT}`)
 }
 
 async function terminate (): Promise<void> {
   appInstance?.close()
-  Logger.isInfoEnabled && Logger.info('service stopped')
+  logger.isInfoEnabled && logger.info('service stopped')
 }
 
 function getApp (): any {
@@ -143,7 +142,7 @@ app.use(function isoCodec (req: Request & { encode?: (...arg: any[]) => Promise<
           req.body = body
           next()
         }, (error: Error) => {
-          Logger.error(error)
+          logger.error(error)
           console.error(error)
           res.status(500).send(error)
         })

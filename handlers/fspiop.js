@@ -1,7 +1,7 @@
 const axios = require('axios')
 const http = require('http')
 const express = require('express')
-const { TraceUtils } = require('@callback-handler-simulator-svc/utils')
+const { TraceUtils } = require('./trace')
 const env = require('env-var')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
@@ -23,6 +23,13 @@ const init = (config, logger, options = undefined) => {
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
   const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt() || 60000
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
+
+  const logError = (err, req, operation) => logger.error(err.message, {
+    stack: err.stack,
+    operation,
+    body: req.body,
+    traceparent: req.headers.traceparent
+  })
 
   // Handle Payee GET Party
   router.get('/parties/:type/:id', (req, res) => {
@@ -75,7 +82,7 @@ const init = (config, logger, options = undefined) => {
           headers: {
             'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
             'accept': 'application/vnd.interoperability.parties+json;version=1.1',
-            Date: new Date(),
+            Date: (new Date()).toUTCString(),
             'fspiop-source': FSP_ID,
             'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
@@ -88,11 +95,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
       } catch (err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_parties'
-        }))
+        logError(err, req, 'fspiop_put_parties')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_parties'})
       }
       histTimerEnd1({ success: true, operation: 'fspiop_get_parties_with_callback'})
@@ -130,7 +133,7 @@ const init = (config, logger, options = undefined) => {
         {
           headers: {
             'content-type': 'application/vnd.interoperability.participants+json;version=1.1',
-            Date: new Date(),
+            Date: (new Date()).toUTCString(),
             'fspiop-source': FSP_ID,
             'fspiop-destination': fspiopSourceHeader,
             'traceparent': traceparentHeader,
@@ -140,11 +143,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_participants'})
       } catch (err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_participants'
-        }))
+        logError(err, req, 'fspiop_put_participants')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_participants'})
       }
     })();
@@ -196,11 +195,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_transfers'})
       } catch(err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_transfers'
-        }))
+        logError(err, req, 'fspiop_put_transfers')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_transfers'})
       }
     })();
@@ -274,22 +269,22 @@ const init = (config, logger, options = undefined) => {
   }
 
   // Handle Payer PUT Party callback
-  router.put('/parties/*', (req, res) => {
+  router.put('/parties/*splat', (req, res) => {
     return handleCallback('parties', req, res)
   })
 
   // Handle Payer PUT Participants callback
-  router.put('/participants/*', (req, res) => {
+  router.put('/participants/*splat', (req, res) => {
     return handleCallback('participants', req, res)
   })
 
   // Handle Payer PUT Transfers callback
-  router.put('/transfers/*', (req, res) => {
+  router.put('/transfers/*splat', (req, res) => {
     return handleCallback('transfers', req, res)
   })
 
   // Handle Payer PUT FX Transfers callback
-  router.put('/fxTransfers/*', (req, res) => {
+  router.put('/fxTransfers/*splat', (req, res) => {
     return handleCallback('fxTransfers', req, res)
   })
 
@@ -346,11 +341,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_quotes'})
       } catch(err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_quotes'
-        }))
+        logError(err, req, 'fspiop_put_quotes')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_quotes'})
       }
     })();
@@ -360,12 +351,12 @@ const init = (config, logger, options = undefined) => {
   })
 
   // Handle Payer PUT Quotes callback
-  router.put('/quotes/*', (req, res) => {
+  router.put('/quotes/*splat', (req, res) => {
     return handleCallback('quotes', req, res)
   })
 
   // Handle Payer PUT FX Quotes callback
-  router.put('/fxQuotes/*', (req, res) => {
+  router.put('/fxQuotes/*splat', (req, res) => {
     return handleCallback('fxQuotes', req, res)
   })
 

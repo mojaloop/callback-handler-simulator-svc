@@ -5,64 +5,64 @@ FSPIOP-Destination: payeefsp
 traceparent: 00-aabb58481421f928a6e88468409959df-0123456789abcdef0-00
 
 {
-  "GrpHdr": {
-    "MsgId": "01JEBS69VWZY2E9KRNMVYVV1ZF",
-    "CreDtTm": "2024-12-05T16:07:03.804Z",
-    "NbOfTxs": "1",
-    "SttlmInf": {
-      "SttlmMtd": "CLRG"
+    "GrpHdr": {
+        "MsgId": "0195F64B3D921137B51A02A78C",
+        "CreDtTm": "2025-04-02T11:38:00.981Z",
+        "NbOfTxs": "1",
+        "SttlmInf": {
+            "SttlmMtd": "CLRG"
+        }
+    },
+    "CdtTrfTxInf": {
+        "PmtId": {
+            "TxId": "0195F64B3D92C82E7DCDB832CB",
+            "EndToEndId": "0195F64B3D9271F10180C988BC"
+        },
+        "Cdtr": {
+            "Id": {
+                "PrvtId": {
+                    "Othr": {
+                        "SchmeNm": {
+                            "Prtry": "ACCOUNT_ID"
+                        },
+                        "Id": "19012345006"
+                    }
+                }
+            }
+        },
+        "CdtrAgt": {
+            "FinInstnId": {
+                "Othr": {
+                    "Id": "perffsp-6"
+                }
+            }
+        },
+        "Dbtr": {
+            "Id": {
+                "PrvtId": {
+                    "Othr": {
+                        "SchmeNm": {
+                            "Prtry": "ACCOUNT_ID"
+                        },
+                        "Id": "19012345003"
+                    }
+                }
+            }
+        },
+        "DbtrAgt": {
+            "FinInstnId": {
+                "Othr": {
+                    "Id": "perffsp-6"
+                }
+            }
+        },
+        "IntrBkSttlmAmt": {
+            "Ccy": "XXX",
+            "ActiveCurrencyAndAmount": "2"
+        },
+        "Purp": {
+            "Prtry": "TRANSFER"
+        },
+        "ChrgBr": "DEBT"
     }
-  },
-  "CdtTrfTxInf": {
-    "PmtId": {
-      "TxId": "01JEBS69VK6AEA8TGAJE3ZA9EH",
-      "EndToEndId": "01JEBS69VK6AEA8TGAJE3ZA9EJ"
-    },
-    "Cdtr": {
-      "Id": {
-        "PrvtId": {
-          "Othr": {
-            "SchmeNm": {
-              "Prtry": "MSISDN"
-            },
-            "Id": "27713803912"
-          }
-        }
-      }
-    },
-    "CdtrAgt": {
-      "FinInstnId": {
-        "Othr": {
-          "Id": "payeefsp"
-        }
-      }
-    },
-    "Dbtr": {
-      "Id": {
-        "PrvtId": {
-          "Othr": {
-            "SchmeNm": {
-              "Prtry": "MSISDN"
-            },
-            "Id": "44123456789"
-          }
-        }
-      }
-    },
-    "DbtrAgt": {
-      "FinInstnId": {
-        "Othr": {
-          "Id": "testingtoolkitdfsp"
-        }
-      }
-    },
-    "IntrBkSttlmAmt": {
-      "Ccy": "XXX",
-      "ActiveCurrencyAndAmount": "100"
-    },
-    "Purp": {
-      "Prtry": "TRANSFER"
-    },
-    "ChrgBr": "DEBT"
-  }
 }

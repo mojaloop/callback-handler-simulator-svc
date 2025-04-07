@@ -12,14 +12,14 @@ const init = (config, logger, options = undefined) => {
     ).startTimer()
 
     const partyToFspIdMap = {
-      "19012345001": 'perffsp1',
-      "19012345002": 'perffsp2',
-      "19012345003": 'perffsp3',
-      "19012345004": 'perffsp4',
-      "19012345005": 'perffsp5',
-      "19012345006": 'perffsp6',
-      "19012345007": 'perffsp7',
-      "19012345008": 'perffsp8'
+      "19012345001": 'perffsp-1',
+      "19012345002": 'perffsp-2',
+      "19012345003": 'perffsp-3',
+      "19012345004": 'perffsp-4',
+      "19012345005": 'perffsp-5',
+      "19012345006": 'perffsp-6',
+      "19012345007": 'perffsp-7',
+      "19012345008": 'perffsp-8'
     }
 
     const id = req.params.id

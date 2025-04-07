@@ -20,6 +20,13 @@ const init = (config, logger, options = undefined) => {
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
+  const logError = (err, req, operation) => logger.error(err.message, {
+    stack: err.stack,
+    operation,
+    body: req.body,
+    traceparent: req.headers.traceparent
+  })
+
   // Handle FXP POST /fxQuotes
   router.post('/fxQuotes', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
@@ -76,12 +83,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_quotes' })
       } catch (err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_fx_quotes',
-          err
-        }))
+        logError(err, req, 'fspiop_put_fx_quotes')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_quotes' })
       }
     })()
@@ -132,11 +134,7 @@ const init = (config, logger, options = undefined) => {
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_fx_transfers' })
       } catch (err) {
-        logger.error(err)
-        logger.error(JSON.stringify({
-          traceparent: req.headers.traceparent,
-          operation: 'fspiop_put_fx_transfers'
-        }))
+        logError(err, req, 'fspiop_put_fx_transfers')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_fx_transfers' })
       }
     })()
@@ -146,7 +144,7 @@ const init = (config, logger, options = undefined) => {
   })
 
   // Handle FXP PATCH Transfers callback
-  router.patch('/fxTransfers/*', (req, res) => {
+  router.patch('/fxTransfers/*splat', (req, res) => {
     res.status(202).end()
   })
 
