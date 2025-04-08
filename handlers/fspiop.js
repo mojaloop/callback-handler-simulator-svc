@@ -305,6 +305,7 @@ const init = (config, logger, options = undefined) => {
     const quoteId = req.body.quoteId;
 
     (async () => {
+      logger.info(`PUT ${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`)
       const egressHistTimerEnd = options.metrics.getHistogram(
         'egress_callbackHandler',
         'Egress - Operation handler',
@@ -344,7 +345,7 @@ const init = (config, logger, options = undefined) => {
         logError(err, req, 'fspiop_put_quotes')
         egressHistTimerEnd({ success: false, operation: 'fspiop_put_quotes'})
       }
-    })();
+    })().catch(error => logError(error, req, 'fspiop_put_quotes'));
     // Sync 202
     res.status(202).end()
     histTimerEnd({ success: true, operation: 'fspiop_post_quotes'})
