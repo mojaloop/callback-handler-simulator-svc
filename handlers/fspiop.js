@@ -221,45 +221,47 @@ const init = (config, logger, options = undefined) => {
   const tracestate = TraceUtils.getTraceStateMap(req.headers)
 
     if (tracestate === undefined || tracestate[TRACESTATE_KEY_END2END_START_TS] === undefined || tracestate[TRACESTATE_KEY_CALLBACK_START_TS] === undefined) {
-      return res.status(400).send(`${TRACESTATE_KEY_END2END_START_TS} or ${TRACESTATE_KEY_CALLBACK_START_TS} key/values not found in tracestate`)
+      // return res.status(400).send(`${TRACESTATE_KEY_END2END_START_TS} or ${TRACESTATE_KEY_CALLBACK_START_TS} key/values not found in tracestate`)
+      logger.isDebugEnabled && logger.debug(`${TRACESTATE_KEY_END2END_START_TS} or ${TRACESTATE_KEY_CALLBACK_START_TS} key/values not found in tracestate`)
+    } else {
+      const e2eDelta = currentTime - tracestate[TRACESTATE_KEY_END2END_START_TS]
+      const requestDelta = tracestate[TRACESTATE_KEY_CALLBACK_START_TS] - tracestate[TRACESTATE_KEY_END2END_START_TS]
+      const responseDelta = currentTime - tracestate[TRACESTATE_KEY_CALLBACK_START_TS]
+  
+      const performanceHistogram = options.metrics.getHistogram(
+        'tx_cb_perf',
+        'Metrics for callbacks',
+        ['success', 'operation']
+      )
+  
+      performanceHistogram.observe({
+        success: (!isErrorOperation).toString(),
+        operation: operationE2e
+      }, e2eDelta / 1000)
+      performanceHistogram.observe({
+        success: (!isErrorOperation).toString(),
+        operation: operationRequest
+      }, requestDelta / 1000)
+      performanceHistogram.observe({
+        success: (!isErrorOperation).toString(),
+        operation: operationResponse
+      }, responseDelta / 1000)
+  
+      logger.isDebugEnabled && logger.debug(
+        {
+          traceparent: req.headers.traceparent,
+          tracestate,
+          operation,
+          path,
+          isErrorOperation,
+          serverHandlingTime: currentTime,
+          [operationE2e]: e2eDelta,
+          [operationRequest]: requestDelta,
+          [operationResponse]: responseDelta
+        }
+      )
     }
 
-    const e2eDelta = currentTime - tracestate[TRACESTATE_KEY_END2END_START_TS]
-    const requestDelta = tracestate[TRACESTATE_KEY_CALLBACK_START_TS] - tracestate[TRACESTATE_KEY_END2END_START_TS]
-    const responseDelta = currentTime - tracestate[TRACESTATE_KEY_CALLBACK_START_TS]
-
-    const performanceHistogram = options.metrics.getHistogram(
-      'tx_cb_perf',
-      'Metrics for callbacks',
-      ['success', 'operation']
-    )
-
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationE2e
-    }, e2eDelta / 1000)
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationRequest
-    }, requestDelta / 1000)
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationResponse
-    }, responseDelta / 1000)
-
-    logger.isDebugEnabled && logger.debug(
-      {
-        traceparent: req.headers.traceparent,
-        tracestate,
-        operation,
-        path,
-        isErrorOperation,
-        serverHandlingTime: currentTime,
-        [operationE2e]: e2eDelta,
-        [operationRequest]: requestDelta,
-        [operationResponse]: responseDelta
-      }
-    )
     const traceId = TraceUtils.getTraceId(req.headers)
     const channel = '/' + traceId + '/' + req.method + req.path
     logger.info(channel)
