@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.3...v0.1.4) (2025-05-22)
+
+
+### Bug Fixes
+
+* make tracestate headers optional ([7abb82a](https://github.com/mojaloop/callback-handler-simulator-svc/commit/7abb82a9456545e4189097864cbe91f396c69c1e))
+* tests ([1cfea00](https://github.com/mojaloop/callback-handler-simulator-svc/commit/1cfea00d7982e84ce7a965123bb38528aaaf8632))
+
 ### [0.1.3](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.2...v0.1.3) (2025-04-07)
 
 
