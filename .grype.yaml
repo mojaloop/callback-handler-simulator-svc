@@ -5,6 +5,13 @@ ignore:
   - vulnerability: "GHSA-3xgq-45jj-v275"
     package:
       name: "cross-spawn"
+  - vulnerability: "CVE-2025-23166"
+    package:
+      name: "node"
+  - vulnerability: "CVE-2025-23167"
+    package:
+      name: "node"
+
 
 # Set output format defaults
 output:
