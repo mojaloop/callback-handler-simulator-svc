@@ -101,21 +101,21 @@ describe('start', () => {
     expect(result.statusCode).toEqual(202)
   })
 
-  it('wildcard endpoint should throw error when tracestate key values are not found', async () => {
+  it('wildcard endpoint should not throw error when tracestate key values are not found', async () => {
     const app = Server.getApp()
     const result = await
     request(app)
       .put('/fspiop/parties/111')
       .set('tracestate', '')
-    expect(result.statusCode).toEqual(400)
+    expect(result.statusCode).toEqual(202)
   })
 
-  it('wildcard endpoint should throw error when tracestate header is not set', async () => {
+  it('wildcard endpoint should not throw error when tracestate header is not set', async () => {
     const app = Server.getApp()
     const result = await
     request(app)
       .put('/fspiop/parties/111')
-    expect(result.statusCode).toEqual(400)
+    expect(result.statusCode).toEqual(202)
   })
 
   it('ws connection should work', async () => {
