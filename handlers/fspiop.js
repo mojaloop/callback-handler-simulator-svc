@@ -21,6 +21,8 @@ const init = (config, logger, options = undefined) => {
   const router = express.Router()
   const ilpPacket = env.get('CBH_FSPIOP_QUOTES_ILPPACKET').asString()
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
+  // Get supported currencies from environment variable or default to XXX and XTS
+  const supportedCurrencies = env.get('CBH_ALS_SUPPORTED_CURRENCIES').default('XXX,XTS').asString().split(',')
   const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt() || 60000
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
@@ -74,7 +76,7 @@ const init = (config, logger, options = undefined) => {
                 "firstName": "Justin"
               }
             },
-            "supportedCurrencies": [ "BGN" ],
+            "supportedCurrencies": supportedCurrencies,
             "name": "Justin Pierre"
           }
         },

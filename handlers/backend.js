@@ -138,6 +138,66 @@ const init = (config, logger, options = undefined) => {
     histTimerEnd({ success: true, operation: 'transfers_post_transfer' })
   })
 
+  // Handle FxTransfer Request
+  router.post('/fxTransfers', (req, res) => {
+    const histTimerEnd = options.metrics.getHistogram(
+      'ing_callbackHandler',
+      'Ingress - Operation handler',
+      ['success', 'operation']
+    ).startTimer()
+
+    const response = {
+      homeTransactionId: 'homeTransactionId',
+      completedTimestamp: (new Date()).toISOString(),
+      conversionState: 'RESERVED'
+    }
+
+    res.status(200).json(response)
+
+    histTimerEnd({ success: true, operation: 'fxtransfers_post_fxtransfer' })
+  })
+
+  // Handle FxQuotes Request
+  router.post('/fxQuotes', (req, res) => {
+    const histTimerEnd = options.metrics.getHistogram(
+      'ing_callbackHandler',
+      'Ingress - Operation handler',
+      ['success', 'operation']
+    ).startTimer()
+    const fxQuotesRequest = req.body
+    const response = {
+      conversionTerms: {
+        ...fxQuotesRequest.conversionTerms,
+        sourceAmount: {
+          amount: fxQuotesRequest.conversionTerms.sourceAmount.amount || '2',
+          currency: fxQuotesRequest.conversionTerms.sourceAmount.currency
+        },
+        targetAmount: {
+          amount: fxQuotesRequest.conversionTerms.targetAmount.amount || '100',
+          currency: fxQuotesRequest.conversionTerms.targetAmount.currency
+        },
+        charges: [
+          {
+            chargeType: 'currency conversion',
+            sourceAmount: {
+              amount: '0.5',
+              currency: fxQuotesRequest.conversionTerms.sourceAmount.currency
+            },
+            targetAmount: {
+              amount: '25.7',
+              currency: fxQuotesRequest.conversionTerms.targetAmount.currency
+            }
+          }
+        ]
+      },      
+      homeTransactionId: 'homeTransactionId'
+    }
+
+    res.status(200).json(response)
+
+    histTimerEnd({ success: true, operation: 'fxquotes_post_fxquotes' })
+  })
+
   router.put('/parties/:type/:id', (req, res) => {
     return handleCallback('parties', req, res)
   })
