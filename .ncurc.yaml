@@ -4,4 +4,5 @@ reject: [
    "eslint-plugin-promise",
    "@typescript-eslint/eslint-plugin", ## can't upgrade due to Definition for rule '@typescript-eslint/indent' was not found
    "@typescript-eslint/parser",
+   "eslint-import-resolver-typescript"
 ]
