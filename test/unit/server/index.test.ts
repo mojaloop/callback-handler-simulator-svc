@@ -50,7 +50,7 @@ describe('start', () => {
     const app = Server.getApp()
     const result = await request(app).get('/health')
     let jsonResult: any = {}
-    expect(() => { jsonResult = JSON.parse(result.text) }).not.toThrowError()
+    expect(() => { jsonResult = JSON.parse(result.text) }).not.toThrow()
     expect(result.statusCode).toEqual(200)
     expect(jsonResult).toHaveProperty('status')
     expect(jsonResult.status).toEqual('OK')
