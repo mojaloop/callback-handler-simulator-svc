@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.4...v0.1.5) (2025-06-13)
+
+
+### Features
+
+* added fx endpoints for backend ([23ae31f](https://github.com/mojaloop/callback-handler-simulator-svc/commit/23ae31f6d3a24c4e09c642fb4e1e3778a0dc9896))
+
+
+### Bug Fixes
+
+* update test to use not.toThrow instead of not.toThrowError ([0b7c3ae](https://github.com/mojaloop/callback-handler-simulator-svc/commit/0b7c3aed2aef7a604c4ddf9e73e9348c6de0649c))
+
 ### [0.1.4](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.3...v0.1.4) (2025-05-22)
 
 
