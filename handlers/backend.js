@@ -1,5 +1,6 @@
 const express = require('express')
 const { TraceUtils } = require('./trace')
+const { processFxQuoteConversion } = require('../src/shared/fx-utils')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
@@ -164,38 +165,26 @@ const init = (config, logger, options = undefined) => {
       'Ingress - Operation handler',
       ['success', 'operation']
     ).startTimer()
-    const fxQuotesRequest = req.body
-    const response = {
-      conversionTerms: {
-        ...fxQuotesRequest.conversionTerms,
-        sourceAmount: {
-          amount: fxQuotesRequest.conversionTerms.sourceAmount.amount || '2',
-          currency: fxQuotesRequest.conversionTerms.sourceAmount.currency
-        },
-        targetAmount: {
-          amount: fxQuotesRequest.conversionTerms.targetAmount.amount || '100',
-          currency: fxQuotesRequest.conversionTerms.targetAmount.currency
-        },
-        charges: [
-          {
-            chargeType: 'currency conversion',
-            sourceAmount: {
-              amount: '0.5',
-              currency: fxQuotesRequest.conversionTerms.sourceAmount.currency
-            },
-            targetAmount: {
-              amount: '25.7',
-              currency: fxQuotesRequest.conversionTerms.targetAmount.currency
-            }
-          }
-        ]
-      },      
-      homeTransactionId: 'homeTransactionId'
+    
+    try {
+      const fxQuotesRequest = req.body
+      const processedConversion = processFxQuoteConversion(fxQuotesRequest)
+      
+      const response = {
+        ...processedConversion,
+        homeTransactionId: 'homeTransactionId'
+      }
+
+      res.status(200).json(response)
+      histTimerEnd({ success: true, operation: 'fxquotes_post_fxquotes' })
+    } catch (error) {
+      logger.error('Error processing FX quote:', error.message)
+      res.status(400).json({ 
+        error: 'Invalid FX quote request', 
+        message: error.message 
+      })
+      histTimerEnd({ success: false, operation: 'fxquotes_post_fxquotes' })
     }
-
-    res.status(200).json(response)
-
-    histTimerEnd({ success: true, operation: 'fxquotes_post_fxquotes' })
   })
 
   router.put('/parties/:type/:id', (req, res) => {
