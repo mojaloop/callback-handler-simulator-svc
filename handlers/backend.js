@@ -1,6 +1,6 @@
 const express = require('express')
 const { TraceUtils } = require('./trace')
-const { processFxQuoteConversion } = require('../src/shared/fx-utils')
+const { processFxQuoteConversion } = require('./fx-utils')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
