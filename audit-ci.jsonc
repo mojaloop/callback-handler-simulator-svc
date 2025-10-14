@@ -5,7 +5,7 @@
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
     // Currently no fixes available for the following
-    "GHSA-wf5p-g6vw-rhxx", // axios
+    "GHSA-9965-vmph-33xx", // validator.js URL validation bypass - no fix available in validator <=13.15.15
     "GHSA-pfrx-2q88-qq97", // npm-check-updates>update-notifier>latest-version>package-json>got
     "GHSA-p8p7-x288-28g6", // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request
     "GHSA-72xf-g2v4-qvf3",  // npm-check-updates>pacote>@npmcli/run-script>node-gyp>request>tough-cookie
