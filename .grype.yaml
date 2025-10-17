@@ -11,6 +11,12 @@ ignore:
   - vulnerability: "CVE-2025-23167"
     package:
       name: "node"
+  # Ignore validator URL validation bypass - no patch available yet
+  # Vulnerability: isURL() function can be bypassed using protocol delimiter differences
+  # Severity: Medium (CVSS 6.1) - Waiting for upstream fix
+  - vulnerability: "GHSA-9965-vmph-33xx"
+    package:
+      name: "validator"
 
 
 # Set output format defaults
