@@ -10,66 +10,21 @@ const init = (config, logger, options = undefined) => {
   const router = express.Router()
 
   const handleCallback = (resource, req, res) => {
-    const histTimerEnd = options.metrics.getHistogram(
-      'ing_callbackHandler',
-      'Ingress - Operation handler',
-      ['success', 'operation']
-    ).startTimer()
     const currentTime = Date.now()
     const path = req.path
     const httpMethod = req.method.toLowerCase()
     const isErrorOperation = path.endsWith('error')
-    const operation = `fspiop_${httpMethod}_${resource}`
-    const operationE2e = `${operation}_end2end`
-    const operationRequest = `${operation}_request`
-    const operationResponse = `${operation}_response`
-    const tracestate = TraceUtils.getTraceStateMap(req.headers)
-
-    if (tracestate === undefined || tracestate[TRACESTATE_KEY_END2END_START_TS] === undefined || tracestate[TRACESTATE_KEY_CALLBACK_START_TS] === undefined) {
-      return res.status(400).send(`${TRACESTATE_KEY_END2END_START_TS} or ${TRACESTATE_KEY_CALLBACK_START_TS} key/values not found in tracestate`)
-    }
-
-    const e2eDelta = currentTime - tracestate[TRACESTATE_KEY_END2END_START_TS]
-    const requestDelta = tracestate[TRACESTATE_KEY_CALLBACK_START_TS] - tracestate[TRACESTATE_KEY_END2END_START_TS]
-    const responseDelta = currentTime - tracestate[TRACESTATE_KEY_CALLBACK_START_TS]
-
-    const performanceHistogram = options.metrics.getHistogram(
-      'tx_cb_perf',
-      'Metrics for callbacks',
-      ['success', 'operation']
-    )
-
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationE2e
-    }, e2eDelta / 1000)
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationRequest
-    }, requestDelta / 1000)
-    performanceHistogram.observe({
-      success: (!isErrorOperation).toString(),
-      operation: operationResponse
-    }, responseDelta / 1000)
+    const operation = `backend_${httpMethod}_${resource}`
 
     logger.isDebugEnabled && logger.debug(
       {
-        traceparent: req.headers.traceparent,
-        tracestate,
         operation,
         path,
         isErrorOperation,
         serverHandlingTime: currentTime,
-        [operationE2e]: e2eDelta,
-        [operationRequest]: requestDelta,
-        [operationResponse]: responseDelta
       }
     )
-    const traceId = TraceUtils.getTraceId(req.headers)
-    const channel = '/' + traceId + '/' + req.method + req.path
-    console.log('Handled PUT Callback request', channel)
-    options.wsServer.notify(channel, isErrorOperation ? 'ERROR_CALLBACK_RECEIVED' : 'SUCCESS_CALLBACK_RECEIVED')
-    histTimerEnd({ success: true, operation })
+    console.log(`Handled ${operation}`)
     return res.status(202).end()
   }
 
@@ -197,6 +152,10 @@ const init = (config, logger, options = undefined) => {
 
   router.put('/transfers/:id', (req, res) => {
     return handleCallback('transfers', req, res)
+  })
+
+  router.put('/fxTransfers/:id', (req, res) => {
+    return handleCallback('fxTransfers', req, res)
   })
 
   return {
