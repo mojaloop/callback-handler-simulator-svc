@@ -146,7 +146,15 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('parties', req, res)
   })
 
+  router.put('/parties/:type/:id/error', (req, res) => {
+    return handleCallback('parties', req, res)
+  })
+
   router.put('/quotes/:id', (req, res) => {
+    return handleCallback('quotes', req, res)
+  })
+
+  router.put('/quotes/:id/error', (req, res) => {
     return handleCallback('quotes', req, res)
   })
 
@@ -154,7 +162,15 @@ const init = (config, logger, options = undefined) => {
     return handleCallback('transfers', req, res)
   })
 
+  router.put('/transfers/:id/error', (req, res) => {
+    return handleCallback('transfers', req, res)
+  })
+
   router.put('/fxTransfers/:id', (req, res) => {
+    return handleCallback('fxTransfers', req, res)
+  })
+
+  router.put('/fxTransfers/:id/error', (req, res) => {
     return handleCallback('fxTransfers', req, res)
   })
 
