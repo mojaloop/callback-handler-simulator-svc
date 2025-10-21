@@ -1,23 +1,11 @@
 ignore:
-  # Ignore cross-spawn vulnerabilities by CVE ID due to false positive
-  # as grype looks at package-lock.json where it shows versions with
-  # vulnerabilities, npm ls shows only 7.0.6 verion is used
-  - vulnerability: "GHSA-3xgq-45jj-v275"
-    package:
-      name: "cross-spawn"
-  - vulnerability: "CVE-2025-23166"
-    package:
-      name: "node"
-  - vulnerability: "CVE-2025-23167"
-    package:
-      name: "node"
-  # Ignore validator URL validation bypass - no patch available yet
-  # Vulnerability: isURL() function can be bypassed using protocol delimiter differences
-  # Severity: Medium (CVSS 6.1) - Waiting for upstream fix
-  - vulnerability: "GHSA-9965-vmph-33xx"
-    package:
-      name: "validator"
-
+  - vulnerability: CVE-2025-46394
+    reason: "No fixes to busybox apk available as of 2025-10-16 on Dockerfile base image 22.20.0-alpine3.22"
+  - vulnerability: CVE-2024-58251
+    reason: "No fixes to busybox apk available as of 2025-10-16 on Dockerfile base image 22.20.0-alpine3.22"
+  - vulnerability: CVE-2025-56200
+    include-aliases: true
+    reason: "No fixes available as of 2025-10-16 on validator npm package"
 
 # Set output format defaults
 output:
