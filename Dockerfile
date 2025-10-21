@@ -34,6 +34,9 @@ RUN apk del build-dependencies
 FROM node:${NODE_VERSION}
 WORKDIR /opt/app
 
+# Update packages to get latest security fixes including OpenSSL
+RUN apk upgrade --no-cache
+
 # Create empty log file & link stdout to the application log file
 RUN mkdir ./logs && touch ./logs/combined.log
 RUN ln -sf /dev/stdout ./logs/combined.log

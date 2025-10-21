@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.6...v0.1.7) (2025-10-20)
+
+
+### Bug Fixes
+
+* grype ([47ed433](https://github.com/mojaloop/callback-handler-simulator-svc/commit/47ed4332e98a141dd0b9318a368d3870261216e0))
+* put transfer and fxtransfers notifications in backend ([d0912e1](https://github.com/mojaloop/callback-handler-simulator-svc/commit/d0912e10de64cc3f392a9d7c9554c7529bedebdc))
+
 ### [0.1.6](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.6-snapshot.1...v0.1.6) (2025-06-18)
 
 ### [0.1.5](https://github.com/mojaloop/callback-handler-simulator-svc/compare/v0.1.4...v0.1.5) (2025-06-13)
