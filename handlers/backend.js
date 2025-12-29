@@ -37,11 +37,12 @@ const init = (config, logger, options = undefined) => {
     ).startTimer()
     const type = req.params.type
     const id = req.params.id
+    const subid = req.params.subid
 
     res.status(202).json({
       "idType": type,
       "idValue": id,
-      ... subid && {"idSubValue": subid},
+      ...subid && {"idSubValue": subid},
       "fsp": "string"
     })
     console.log('Handled GET request')
