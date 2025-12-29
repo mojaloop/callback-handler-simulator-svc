@@ -29,7 +29,7 @@ const init = (config, logger, options = undefined) => {
   }
 
   // Handle Oracle GET Participants request
-  router.get('/parties/:type/:id', (req, res) => {
+  router.get('/parties/:type/:id{/:subid}', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
       'ing_callbackHandler',
       'Ingress - Operation handler',
@@ -41,6 +41,7 @@ const init = (config, logger, options = undefined) => {
     res.status(202).json({
       "idType": type,
       "idValue": id,
+      ... subid && {"idSubValue": subid},
       "fsp": "string"
     })
     console.log('Handled GET request')
@@ -120,11 +121,11 @@ const init = (config, logger, options = undefined) => {
       'Ingress - Operation handler',
       ['success', 'operation']
     ).startTimer()
-    
+
     try {
       const fxQuotesRequest = req.body
       const processedConversion = processFxQuoteConversion(fxQuotesRequest)
-      
+
       const response = {
         ...processedConversion,
         homeTransactionId: 'homeTransactionId'
@@ -134,9 +135,9 @@ const init = (config, logger, options = undefined) => {
       histTimerEnd({ success: true, operation: 'fxquotes_post_fxquotes' })
     } catch (error) {
       logger.error('Error processing FX quote:', error.message)
-      res.status(400).json({ 
-        error: 'Invalid FX quote request', 
-        message: error.message 
+      res.status(400).json({
+        error: 'Invalid FX quote request',
+        message: error.message
       })
       histTimerEnd({ success: false, operation: 'fxquotes_post_fxquotes' })
     }

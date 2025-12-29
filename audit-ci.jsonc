@@ -4,7 +4,5 @@
   // Only use one of ["low": true, "moderate": true, "high": true, "critical": true]
   "moderate": true,
   "allowlist": [ // NOTE: Please add as much information as possible to any items added to the allowList
-    // Currently no fixes available for the following
-    "GHSA-9965-vmph-33xx" // validator.js URL validation bypass - no fix available in validator <=13.15.15
   ]
 }
