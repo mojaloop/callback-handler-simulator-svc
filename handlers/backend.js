@@ -24,7 +24,7 @@ const init = (config, logger, options = undefined) => {
         serverHandlingTime: currentTime,
       }
     )
-    console.log(`Handled ${operation}`)
+    console.log(`Handled ${operation} ${path}`)
     return res.status(202).end()
   }
 
@@ -45,7 +45,7 @@ const init = (config, logger, options = undefined) => {
       ...subid && {"idSubValue": subid},
       "fsp": "string"
     })
-    console.log('Handled GET request')
+    console.log(`Handled backend_get_parties ${req.path} `)
     histTimerEnd({ success: true, operation: 'oracle_get_parties'})
   })
 
