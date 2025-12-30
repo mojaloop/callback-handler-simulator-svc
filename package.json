@@ -48,7 +48,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.2",
     "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/ml-schema-transformer-lib": "2.7.8",
+    "@mojaloop/ml-schema-transformer-lib": "2.7.11-subtype.1",
     "axios": "1.13.2",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",
