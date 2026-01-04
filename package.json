@@ -48,7 +48,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.2",
     "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/ml-schema-transformer-lib": "2.7.11-subtype.1",
+    "@mojaloop/ml-schema-transformer-lib": "2.7.11",
     "axios": "1.13.2",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",
@@ -89,7 +89,7 @@
     "jest-junit": "^16.0.0",
     "jest-mock-process": "^2.0.0",
     "nodemon": "^3.1.11",
-    "npm-check-updates": "^19.2.0",
+    "npm-check-updates": "^19.2.1",
     "prettier": "^3.7.4",
     "standard-version": "^9.5.0",
     "supertest": "^7.1.4",
