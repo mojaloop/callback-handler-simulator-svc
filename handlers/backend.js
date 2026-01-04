@@ -24,12 +24,12 @@ const init = (config, logger, options = undefined) => {
         serverHandlingTime: currentTime,
       }
     )
-    console.log(`Handled ${operation}`)
+    console.log(`Handled ${operation} ${path}`)
     return res.status(202).end()
   }
 
   // Handle Oracle GET Participants request
-  router.get('/parties/:type/:id', (req, res) => {
+  router.get('/parties/:type/:id{/:subid}', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
       'ing_callbackHandler',
       'Ingress - Operation handler',
@@ -37,13 +37,15 @@ const init = (config, logger, options = undefined) => {
     ).startTimer()
     const type = req.params.type
     const id = req.params.id
+    const subid = req.params.subid
 
     res.status(202).json({
       "idType": type,
       "idValue": id,
+      ...subid && {"idSubValue": subid},
       "fsp": "string"
     })
-    console.log('Handled GET request')
+    console.log(`Handled backend_get_parties ${req.path} `)
     histTimerEnd({ success: true, operation: 'oracle_get_parties'})
   })
 
@@ -120,11 +122,11 @@ const init = (config, logger, options = undefined) => {
       'Ingress - Operation handler',
       ['success', 'operation']
     ).startTimer()
-    
+
     try {
       const fxQuotesRequest = req.body
       const processedConversion = processFxQuoteConversion(fxQuotesRequest)
-      
+
       const response = {
         ...processedConversion,
         homeTransactionId: 'homeTransactionId'
@@ -134,9 +136,9 @@ const init = (config, logger, options = undefined) => {
       histTimerEnd({ success: true, operation: 'fxquotes_post_fxquotes' })
     } catch (error) {
       logger.error('Error processing FX quote:', error.message)
-      res.status(400).json({ 
-        error: 'Invalid FX quote request', 
-        message: error.message 
+      res.status(400).json({
+        error: 'Invalid FX quote request',
+        message: error.message
       })
       histTimerEnd({ success: false, operation: 'fxquotes_post_fxquotes' })
     }

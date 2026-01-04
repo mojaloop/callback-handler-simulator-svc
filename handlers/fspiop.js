@@ -34,7 +34,7 @@ const init = (config, logger, options = undefined) => {
   })
 
   // Handle Payee GET Party
-  router.get('/parties/:type/:id', (req, res) => {
+  router.get('/parties/:type/:id{/:subid}', (req, res) => {
     const histTimerEnd = options.metrics.getHistogram(
       'ing_callbackHandler',
       'Ingress - Operation handler',
@@ -49,6 +49,7 @@ const init = (config, logger, options = undefined) => {
     // Async callback
     const type = req.params.type
     const id = req.params.id
+    const subid = req.params.subid
     const fspiopSourceHeader = req.headers['fspiop-source']
     const traceparentHeader = req.headers['traceparent']
     const tracestateHeader = req.headers['tracestate'];
@@ -60,11 +61,12 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}`, ... await req.encode({
+        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}${subid ? '/' + subid : ''}`, ... await req.encode({
           "party": {
             "partyIdInfo": {
               "type": "CONSUMER",
               "partyIdType": "MSISDN",
+              ...subid && {partySubIdOrType: subid},
               "partyIdentifier": id,
               "fspId": FSP_ID
             },
@@ -93,6 +95,7 @@ const init = (config, logger, options = undefined) => {
           httpAgent,
         }, {
           ID: id,
+          ...subid && {SubId: subid},
           Type: type
         }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
@@ -229,13 +232,13 @@ const init = (config, logger, options = undefined) => {
       const e2eDelta = currentTime - tracestate[TRACESTATE_KEY_END2END_START_TS]
       const requestDelta = tracestate[TRACESTATE_KEY_CALLBACK_START_TS] - tracestate[TRACESTATE_KEY_END2END_START_TS]
       const responseDelta = currentTime - tracestate[TRACESTATE_KEY_CALLBACK_START_TS]
-  
+
       const performanceHistogram = options.metrics.getHistogram(
         'tx_cb_perf',
         'Metrics for callbacks',
         ['success', 'operation']
       )
-  
+
       performanceHistogram.observe({
         success: (!isErrorOperation).toString(),
         operation: operationE2e
@@ -248,7 +251,7 @@ const init = (config, logger, options = undefined) => {
         success: (!isErrorOperation).toString(),
         operation: operationResponse
       }, responseDelta / 1000)
-  
+
       logger.isDebugEnabled && logger.debug(
         {
           traceparent: req.headers.traceparent,
