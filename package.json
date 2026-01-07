@@ -48,7 +48,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.2",
     "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/ml-schema-transformer-lib": "2.7.11",
+    "@mojaloop/ml-schema-transformer-lib": "2.7.13",
     "axios": "1.13.2",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",
@@ -61,7 +61,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "uuid": "^13.0.0",
-    "ws": "^8.18.3"
+    "ws": "^8.19.0"
   },
   "devDependencies": {
     "@types/convict": "^6.1.6",
@@ -89,10 +89,10 @@
     "jest-junit": "^16.0.0",
     "jest-mock-process": "^2.0.0",
     "nodemon": "^3.1.11",
-    "npm-check-updates": "^19.2.1",
+    "npm-check-updates": "^19.3.1",
     "prettier": "^3.7.4",
     "standard-version": "^9.5.0",
-    "supertest": "^7.1.4",
+    "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0"
