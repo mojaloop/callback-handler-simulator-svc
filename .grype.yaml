@@ -8,7 +8,26 @@ ignore:
     reason: "No fixes available as of 2025-10-16 on validator npm package"
   - vulnerability: GHSA-5j98-mcp5-4vw2
   - vulnerability: CVE-2025-60876
-
+  - vulnerability: CVE-2025-59465
+    reason: "No fixes available as of 2025-10-16 on node 22.20.0"
+  - vulnerability: GHSA-34x7-hfp2-rc4v
+    reason: "No fixes available as of 2025-10-16 on tar 6.2.1 and 7.4.3"
+  - vulnerability: CVE-2025-55131
+    reason: "No fixes available as of 2025-10-16 on node 22.20.0"
+  - vulnerability: GHSA-r6q2-hw4h-h46w
+    reason: "No fixes available as of 2025-10-16 on tar 6.2.1 and 7.4.3"
+  - vulnerability: GHSA-8qq5-rm4j-mr97
+    reason: "No fixes available as of 2025-10-16 on tar 6.2.1 and 7.4.3"
+  - vulnerability: CVE-2025-55130
+    reason: "No fixes available as of 2025-10-16 on node 22.20.0"
+  - vulnerability: GHSA-xxjr-mmjv-4gpg
+    reason: "Medium severity - No fixes available as of 2025-10-16 on lodash 4.17.21 and lodash-es 4.17.21"
+  - vulnerability: CVE-2026-21637
+    reason: "Medium severity - No fixes available as of 2025-10-16 on node 22.20.0"
+  - vulnerability: CVE-2025-59466
+    reason: "Medium severity - No fixes available as of 2025-10-16 on node 22.20.0"
+  - vulnerability: GHSA-g9mf-h72j-4rw9
+    reason: "Medium severity - No fixes available as of 2025-10-16 on undici 6.22.0"
 # Set output format defaults
 output:
   - "table"
