@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/callback-handler-simulator-svc",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "High performance callback handler simulator service for Mojaloop",
   "license": "Apache-2.0",
   "author": "Kevin Leyow",
