@@ -48,7 +48,7 @@
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.3",
     "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/ml-schema-transformer-lib": "2.8.0",
+    "@mojaloop/ml-schema-transformer-lib": "2.8.1",
     "axios": "1.13.4",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",
@@ -67,7 +67,7 @@
     "@types/convict": "^6.1.6",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.1.0",
+    "@types/node": "^25.2.0",
     "@types/rc": "^1.2.4",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^11.0.0",
