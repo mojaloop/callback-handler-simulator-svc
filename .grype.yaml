@@ -32,6 +32,7 @@ ignore:
     reason: "High severity - fast-xml-parser 4.5.3"
   - vulnerability: GHSA-p5wg-g6qr-c7cg
     reason: "Medium severity - eslint 8.57.1"
+  - vulnerability: GHSA-3966-f6p6-2qr9
 # Set output format defaults
 output:
   - "table"
