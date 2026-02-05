@@ -42,13 +42,14 @@
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -u",
+    "dep:automate": "sh ./updateDepAndAudit.sh",
     "release": "npx standard-version --no-verify --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
     "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
     "@mojaloop/central-services-logger": "11.10.3",
     "@mojaloop/central-services-metrics": "12.8.3",
-    "@mojaloop/ml-schema-transformer-lib": "2.8.1",
+    "@mojaloop/ml-schema-transformer-lib": "2.9.0",
     "axios": "1.13.4",
     "convict": "^6.2.4",
     "env-var": "^7.5.0",
