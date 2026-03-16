@@ -2,6 +2,7 @@ const axios = require('axios')
 const http = require('http')
 const express = require('express')
 const env = require('env-var')
+const { SCENARIOS, detectScenario } = require('./scenario-utils')
 
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
 
@@ -18,6 +19,7 @@ const init = (config, logger, options = undefined) => {
   const HTTP_KEEPALIVE = env.get('CBH_FSPIOP_CALLBACK_HTTP_KEEPALIVE').default('true').asBool()
   const router = express.Router()
   const condition = env.get('CBH_FSPIOP_QUOTES_CONDITION').asString()
+  const timeoutMs = env.get('CBH_SCENARIO_TIMEOUT_MS').default('5000').asIntPositive()
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
   const logError = (err, req, operation) => logger.error(err.message, {
@@ -42,6 +44,17 @@ const init = (config, logger, options = undefined) => {
     const traceparentHeader = req.headers.traceparent
     const tracestateHeader = req.headers.tracestate
     const conversionRequestId = req.body.conversionRequestId;
+    const scenario = detectScenario(req.body)
+
+    if (scenario === SCENARIOS.timeout) {
+      setTimeout(() => {
+        if (!res.headersSent) {
+          res.status(202).end()
+        }
+      }, timeoutMs)
+      histTimerEnd({ success: true, operation: 'fspiop_post_fx_quotes' })
+      return
+    }
 
     (async () => {
       const egressHistTimerEnd = options.metrics.getHistogram(
@@ -50,6 +63,8 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
+        const isAbort = scenario === SCENARIOS.fxpAbort
+
         // simulate FX rate = 1:1
         switch (req.body.conversionTerms.amountType) {
           case 'SEND':
@@ -64,10 +79,22 @@ const init = (config, logger, options = undefined) => {
 
         // Important to remove the Accept header, otherwise axios will add a default one to the request
         // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}`, ... await req.encode({
-          conversionTerms: req.body.conversionTerms,
-          condition
-        },
+        await instance.put(
+          isAbort
+            ? `${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}/error`
+            : `${FSPIOP_QUOTES_ENDPOINT_URL}/fxQuotes/${conversionRequestId}`,
+          ... await req.encode(
+            isAbort
+              ? {
+                errorInformation: {
+                  errorCode: '3200',
+                  errorDescription: 'FX provider aborted quote conversion'
+                }
+              }
+              : {
+                conversionTerms: req.body.conversionTerms,
+                condition
+              },
         {
           headers: {
             'content-type': 'application/vnd.interoperability.fxQuotes+json;version=1.0',
@@ -105,6 +132,17 @@ const init = (config, logger, options = undefined) => {
     const traceparentHeader = req.headers.traceparent
     const tracestateHeader = req.headers.tracestate
     const commitRequestId = req.body.commitRequestId;
+    const scenario = detectScenario(req.body)
+
+    if (scenario === SCENARIOS.timeout) {
+      setTimeout(() => {
+        if (!res.headersSent) {
+          res.status(202).end()
+        }
+      }, timeoutMs)
+      histTimerEnd({ success: true, operation: 'fspiop_post_fx_transfers' })
+      return
+    }
 
     (async () => {
       const egressHistTimerEnd = options.metrics.getHistogram(
@@ -113,11 +151,24 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`, ... await req.encode({
-          conversionState: 'RESERVED',
-          fulfilment: FULFILMENT,
-          completedTimestamp: (new Date()).toISOString()
-        },
+        const isAbort = scenario === SCENARIOS.fxpAbort
+        await instance.put(
+          isAbort
+            ? `${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}/error`
+            : `${FSPIOP_TRANSFERS_ENDPOINT_URL}/fxTransfers/${commitRequestId}`,
+          ... await req.encode(
+            isAbort
+              ? {
+                errorInformation: {
+                  errorCode: '3200',
+                  errorDescription: 'FX provider aborted transfer conversion'
+                }
+              }
+              : {
+                conversionState: 'RESERVED',
+                fulfilment: FULFILMENT,
+                completedTimestamp: (new Date()).toISOString()
+              },
         {
           headers: {
             'content-type': 'application/vnd.interoperability.fxTransfers+json;version=1.1',

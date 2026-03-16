@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const { TraceUtils } = require('./trace')
 const env = require('env-var')
+const { SCENARIOS, detectScenario, isInvalidLookupId } = require('./scenario-utils')
 
 const TRACESTATE_KEY_END2END_START_TS = 'tx_end2end_start_ts'
 const TRACESTATE_KEY_CALLBACK_START_TS = 'tx_callback_start_ts'
@@ -24,6 +25,7 @@ const init = (config, logger, options = undefined) => {
   // Get supported currencies from environment variable or default to XXX and XTS
   const supportedCurrencies = env.get('CBH_ALS_SUPPORTED_CURRENCIES').default('XXX,XTS').asString().split(',')
   const quoteExpirationWindow = env.get('CBH_QUOTE_EXPIRATION_WINDOW').asInt() || 60000
+  const timeoutMs = env.get('CBH_SCENARIO_TIMEOUT_MS').default('5000').asIntPositive()
   const httpAgent = new http.Agent({ keepAlive: HTTP_KEEPALIVE })
 
   const logError = (err, req, operation) => logger.error(err.message, {
@@ -53,6 +55,7 @@ const init = (config, logger, options = undefined) => {
     const fspiopSourceHeader = req.headers['fspiop-source']
     const traceparentHeader = req.headers['traceparent']
     const tracestateHeader = req.headers['tracestate'];
+    const invalidLookup = isInvalidLookupId(id)
 
     (async () => {
       const egressHistTimerEnd = options.metrics.getHistogram(
@@ -61,43 +64,56 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}${subid ? '/' + subid : ''}`, ... await req.encode({
-          "party": {
-            "partyIdInfo": {
-              "type": "CONSUMER",
-              "partyIdType": "MSISDN",
-              ...subid && {partySubIdOrType: subid},
-              "partyIdentifier": id,
-              "fspId": FSP_ID
-            },
-            "personalInfo": {
-              "dateOfBirth": "1971-12-25",
-              "complexName": {
-                "lastName": "Trudeau",
-                "middleName": "Pierre",
-                "firstName": "Justin"
-              }
-            },
-            "supportedCurrencies": supportedCurrencies,
-            "name": "Justin Pierre"
+        const callbackBody = invalidLookup
+          ? {
+            errorInformation: {
+              errorCode: '3204',
+              errorDescription: 'Party identifier not found'
+            }
           }
-        },
-        {
-          headers: {
-            'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
-            'accept': 'application/vnd.interoperability.parties+json;version=1.1',
-            Date: (new Date()).toUTCString(),
-            'fspiop-source': FSP_ID,
-            'fspiop-destination': fspiopSourceHeader,
-            'traceparent': traceparentHeader,
-            'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
-          },
-          httpAgent,
-        }, {
-          ID: id,
-          ...subid && {SubId: subid},
-          Type: type
-        }))
+          : {
+            "party": {
+              "partyIdInfo": {
+                "type": "CONSUMER",
+                "partyIdType": "MSISDN",
+                ...subid && {partySubIdOrType: subid},
+                "partyIdentifier": id,
+                "fspId": FSP_ID
+              },
+              "personalInfo": {
+                "dateOfBirth": "1971-12-25",
+                "complexName": {
+                  "lastName": "Trudeau",
+                  "middleName": "Pierre",
+                  "firstName": "Justin"
+                }
+              },
+              "supportedCurrencies": supportedCurrencies,
+              "name": "Justin Pierre"
+            }
+          }
+
+        const callbackPath = invalidLookup
+          ? `${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}${subid ? '/' + subid : ''}/error`
+          : `${FSPIOP_ALS_ENDPOINT_URL}/parties/${type}/${id}${subid ? '/' + subid : ''}`
+
+        await instance.put(callbackPath, ... await req.encode(callbackBody,
+          {
+            headers: {
+              'content-type': 'application/vnd.interoperability.parties+json;version=1.1',
+              'accept': 'application/vnd.interoperability.parties+json;version=1.1',
+              Date: (new Date()).toUTCString(),
+              'fspiop-source': FSP_ID,
+              'fspiop-destination': fspiopSourceHeader,
+              'traceparent': traceparentHeader,
+              'tracestate': tracestateHeader + `,${TRACESTATE_KEY_CALLBACK_START_TS}=${Date.now()}`
+            },
+            httpAgent,
+          }, {
+            ID: id,
+            ...subid && {SubId: subid},
+            Type: type
+          }))
         egressHistTimerEnd({ success: true, operation: 'fspiop_put_parties'})
       } catch (err) {
         logError(err, req, 'fspiop_put_parties')
@@ -171,6 +187,17 @@ const init = (config, logger, options = undefined) => {
     const traceparentHeader = req.headers['traceparent']
     const tracestateHeader = req.headers['tracestate'];
     const transferId = req.body.transferId;
+    const scenario = detectScenario(req.body)
+
+    if (scenario === SCENARIOS.timeout) {
+      setTimeout(() => {
+        if (!res.headersSent) {
+          res.status(202).end()
+        }
+      }, timeoutMs)
+      histTimerEnd({ success: true, operation: 'fspiop_post_transfers'})
+      return
+    }
 
     (async () => {
       const egressHistTimerEnd = options.metrics.getHistogram(
@@ -179,11 +206,26 @@ const init = (config, logger, options = undefined) => {
         ['success', 'operation']
       ).startTimer()
       try {
-        await instance.put(`${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`, ... await req.encode({
+        const callbackBody = scenario === SCENARIOS.payeeAbort || scenario === SCENARIOS.liquidityNdc
+          ? {
+            errorInformation: {
+              errorCode: scenario === SCENARIOS.liquidityNdc ? '5106' : '5101',
+              errorDescription: scenario === SCENARIOS.liquidityNdc
+                ? 'Transfer rejected by liquidity/NDC checks'
+                : 'Transfer aborted by payee'
+            }
+          }
+          : {
             "transferState": "COMMITTED",
             "fulfilment": FULFILMENT,
             "completedTimestamp": (new Date()).toISOString()
-        },
+          }
+
+        const callbackPath = scenario === SCENARIOS.payeeAbort || scenario === SCENARIOS.liquidityNdc
+          ? `${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}/error`
+          : `${FSPIOP_TRANSFERS_ENDPOINT_URL}/transfers/${transferId}`
+
+        await instance.put(callbackPath, ... await req.encode(callbackBody,
         {
           headers: {
             'content-type': 'application/vnd.interoperability.transfers+json;version=1.1',
@@ -310,6 +352,17 @@ const init = (config, logger, options = undefined) => {
     const traceparentHeader = req.headers['traceparent']
     const tracestateHeader = req.headers['tracestate'];
     const quoteId = req.body.quoteId;
+    const scenario = detectScenario(req.body)
+
+    if (scenario === SCENARIOS.timeout) {
+      setTimeout(() => {
+        if (!res.headersSent) {
+          res.status(202).end()
+        }
+      }, timeoutMs)
+      histTimerEnd({ success: true, operation: 'fspiop_post_quotes'})
+      return
+    }
 
     (async () => {
       const egressHistTimerEnd = options.metrics.getHistogram(
@@ -322,17 +375,32 @@ const init = (config, logger, options = undefined) => {
         const quoteTransferAmount = quoteBody.amount.amount
         const quoteExpiration = new Date(new Date().getTime() + quoteExpirationWindow).toISOString()
 
+        const callbackBody = scenario === SCENARIOS.quoteRule || scenario === SCENARIOS.liquidityNdc
+          ? {
+            errorInformation: {
+              errorCode: scenario === SCENARIOS.quoteRule ? '3201' : '5106',
+              errorDescription: scenario === SCENARIOS.quoteRule
+                ? 'Quote rejected by configured quote rule'
+                : 'Quote rejected by liquidity/NDC checks'
+            }
+          }
+          : {
+            "transferAmount": {
+              "currency": `${quoteBody.amount.currency}`,
+              "amount": `${quoteTransferAmount}`
+            },
+            "ilpPacket": ilpPacket,
+            "condition": condition,
+            "expiration": quoteExpiration
+          }
+
+        const callbackPath = scenario === SCENARIOS.quoteRule || scenario === SCENARIOS.liquidityNdc
+          ? `${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}/error`
+          : `${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`
+
         // Important to remove the Accept header, otherwise axios will add a default one to the request
         // and the validation will fail
-        await instance.put(`${FSPIOP_QUOTES_ENDPOINT_URL}/quotes/${quoteId}`, ... await req.encode({
-          "transferAmount": {
-            "currency": `${quoteBody.amount.currency}`,
-            "amount": `${quoteTransferAmount}`
-          },
-          "ilpPacket": ilpPacket,
-          "condition": condition,
-          "expiration": quoteExpiration
-        },
+        await instance.put(callbackPath, ... await req.encode(callbackBody,
         {
           headers: {
             'content-type': 'application/vnd.interoperability.quotes+json;version=1.0',
